@@ -95,9 +95,9 @@ a {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 6px;
-  padding: 10px 10px 8px;
-  border-bottom: 1px solid var(--line);
+  gap: 4px;
+  padding: 8px 12px 7px;
+  border-bottom: 1px solid transparent;
   position: relative;
   z-index: 3;
   background: rgba(243, 238, 228, 0.92);
@@ -120,9 +120,9 @@ a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
-  font-size: clamp(13px, 3.6vw, 26px);
+  letter-spacing: 0.22em;
+  font-weight: 400;
+  font-size: 12px;
   line-height: 1;
   white-space: nowrap;
 }
@@ -138,11 +138,12 @@ a {
 .text-btn {
   background: none;
   border: 0;
-  padding: 6px 0;
+  padding: 4px 0;
   cursor: pointer;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 400;
 }
 
 .icon-btn {
@@ -158,11 +159,11 @@ a {
 }
 
 .icon-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   stroke: var(--ink);
   fill: none;
-  stroke-width: 1.2;
+  stroke-width: 1;
 }
 
 .bag-count {
@@ -186,25 +187,39 @@ main {
 
 .hero {
   position: relative;
-  min-height: 72vh;
   display: grid;
-  background: #e7e0d4;
+  background: #1c1814;
 }
 
 .hero img {
   width: 100%;
-  height: 72vh;
+  height: 58vh;
+  max-height: 620px;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center 28%;
 }
 
 .hero-copy {
   position: absolute;
   inset: auto 0 0;
   text-align: center;
-  color: var(--ink);
-  padding: 48px 16px 28px;
-  background: linear-gradient(to top, rgba(243, 238, 228, 0.94), rgba(243, 238, 228, 0));
+  color: #fff;
+  padding: 72px 16px 22px;
+  background: linear-gradient(to top, rgba(12, 10, 8, 0.62), rgba(12, 10, 8, 0) 78%);
+}
+
+.hero-copy .caps {
+  font-size: 15px;
+  letter-spacing: 0.34em;
+  font-weight: 400;
+}
+
+.hero-copy .ornament span {
+  background: #fff;
+}
+
+.hero-copy .ornament i {
+  border-color: #fff;
 }
 
 .hero h1,
@@ -573,12 +588,12 @@ input:disabled {
 }
 
 .notes {
-  margin: 28px 14px;
-  padding: 28px 16px;
+  margin: 0;
+  width: 100%;
+  padding: 88px 16px 40px;
   text-align: center;
-  background: rgba(233, 225, 210, 0.65);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  background: #efe6d6;
+  border: 0;
 }
 
 .notes form,
@@ -920,8 +935,9 @@ label.check {
 
 @media (min-width: 980px) {
   .wordmark {
-    font-size: 26px;
-    letter-spacing: 0.2em;
+    font-size: 18px;
+    letter-spacing: 0.32em;
+    font-weight: 400;
   }
 
   .bar {
@@ -960,10 +976,11 @@ label.check {
     left: 0;
     right: 0;
     top: 100%;
-    background: rgba(243, 238, 228, 0.98);
+    background: #f6f1e7;
     border-bottom: 1px solid var(--line);
-    grid-template-columns: 1fr 1fr 1fr 280px;
-    gap: 18px;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) 200px;
+    align-items: start;
+    gap: 18px 28px;
     padding: 28px 36px 32px;
     text-align: left;
   }
@@ -986,6 +1003,7 @@ label.check {
   }
 
   .mega-photo {
+    width: 190px;
     aspect-ratio: 4/5;
     overflow: hidden;
   }
@@ -1057,11 +1075,14 @@ label.check {
 }
 .explore-title {
   text-align: center;
-  margin-bottom: 18px;
+  margin: 0 0 28px;
+  font-size: 42px;
+  font-weight: 400;
 }
 .explore-collage {
-  display: grid;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 .explore-card {
   position: relative;
@@ -1071,9 +1092,15 @@ label.check {
 }
 .explore-card img {
   width: 100%;
-  aspect-ratio: 4/5;
+  height: auto;
+  aspect-ratio: auto;
   object-fit: cover;
 }
+.ex-1 { width: 84%; margin-right: auto; }
+.ex-3 { width: 90%; margin-left: auto; order: 2; }
+.ex-2 { width: 78%; margin-right: auto; order: 3; }
+.ex-4 { width: 68%; margin-left: 12%; order: 4; }
+.ex-5 { width: 74%; margin-left: auto; order: 5; }
 .explore-card span {
   position: absolute;
   left: 0;
@@ -1107,19 +1134,22 @@ label.check {
 }
 .video-note {
   position: absolute;
-  left: 12px;
-  bottom: 8px;
-  color: #fff;
-  margin: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
 }
 .featured-row {
   display: grid;
-  gap: 28px;
-  padding: 0 16px 40px;
+  gap: 36px;
+  padding: 0 28px 28px;
   text-align: center;
+  max-width: 1180px;
+  margin: 0 auto;
 }
 .featured-photo {
   position: relative;
+  padding: 16px 14px;
 }
 .featured-photo img {
   width: 100%;
@@ -1133,6 +1163,13 @@ label.check {
   height: 100%;
   object-fit: fill;
   pointer-events: none;
+}
+.disclosure {
+  max-width: 36rem;
+  margin: 0 auto 28px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
 }
 .featured-card h3 {
   margin: 12px 0 0;
@@ -1166,21 +1203,32 @@ label.check {
   aspect-ratio: 1;
   object-fit: cover;
 }
-.shops ul {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0 18px;
-  letter-spacing: 0.14em;
+.shop-lines {
+  margin: 8px auto 18px;
+  max-width: 34rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.9;
 }
-.shops li {
-  margin: 6px 0;
+.shop-lines span {
+  display: block;
+}
+.shop-rule {
+  width: min(460px, 86%);
+  margin: 8px auto;
+}
+.shops .orn-btn {
+  outline: 1px solid var(--ink);
+  outline-offset: 5px;
+  background: transparent;
+  min-width: 220px;
 }
 .notes {
-  background: #efe6d6 url("/campaign/newsletter-background.png") center top / 100% 180px no-repeat;
-  border: 0;
-  padding-top: 72px;
+  margin: 0;
+  width: 100%;
+  background: #efe6d6 url("/campaign/newsletter-background.png") center top / 100% auto no-repeat;
+  padding-top: 96px;
 }
 .email-line {
   display: flex;
@@ -1198,14 +1246,18 @@ label.check {
   padding-top: 28px;
 }
 .footer-lockup {
-  width: 180px;
-  margin: 0 auto 18px;
-  border: 1px solid var(--ink);
-  border-radius: 40px;
-  padding: 10px 16px;
+  width: 210px;
+  margin: 8px auto 22px;
   text-align: center;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+}
+.footer-lockup svg {
+  width: 100%;
+  height: auto;
+}
+.footer-lockup text {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.18em;
 }
 .footer-links {
   display: grid;
@@ -1298,44 +1350,99 @@ label.check {
     padding: 10px 12px;
     border-top: 1px solid var(--line);
   }
+  .pdp {
+    padding: 0;
+    gap: 0;
+  }
+  .pdp-gallery {
+    position: relative;
+  }
+  .pdp-slide {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    background: #e7e1d4;
+  }
+  .pdp-gallery .pdp-slide:not(.is-active) {
+    display: none;
+  }
   .gallery-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 14px;
     display: flex;
     justify-content: center;
-    gap: 6px;
-    margin: 8px 0 0;
+    gap: 7px;
   }
-  .pdp-gallery .frame:not(.is-active) {
-    display: none;
+  .gallery-dots button {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    font-size: 0;
+  }
+  .gallery-dots button[aria-current="true"] {
+    background: #fff;
+  }
+  .pdp-info h1 {
+    font-size: 22px;
+    letter-spacing: 0.22em;
+  }
+  .pdp-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    margin: 8px auto;
+    background: #f7f1e6;
   }
 }
 @media (min-width: 900px) {
   .tout-row {
     grid-template-columns: 1fr 1fr;
   }
+  .hero img {
+    height: 56vh;
+    max-height: 640px;
+  }
+  .hero-copy .caps {
+    font-size: 20px;
+    letter-spacing: 0.46em;
+  }
   .explore {
     background-image: url("/campaign/HP_CATEGORIES_DESKTOP_BG_HOLIDAY_1_2026.png");
-    min-height: 760px;
+    min-height: 980px;
+    padding-top: 36px;
   }
   .explore-title {
     position: relative;
     z-index: 2;
+    font-size: 52px;
+    margin-bottom: 0;
   }
   .explore-collage {
     position: relative;
-    height: 640px;
+    height: 860px;
     display: block;
   }
   .explore-card {
     position: absolute;
+    margin: 0;
+    order: 0;
   }
-  .ex-1 { left: 4%; top: 0; width: 28%; }
-  .ex-2 { left: 40%; top: 36px; width: 24%; }
-  .ex-3 { left: 16%; top: 340px; width: 26%; }
-  .ex-4 { left: 44%; top: 280px; width: 22%; }
-  .ex-5 { left: 70%; top: 250px; width: 22%; }
+  .ex-1 { left: 7%; top: 6%; width: 24%; }
+  .ex-2 { left: 48%; top: 2%; width: 22%; }
+  .ex-3 { left: 18%; top: 58%; width: 24%; }
+  .ex-4 { left: 46%; top: 50%; width: 20%; }
+  .ex-5 { left: 72%; top: 40%; width: 20%; }
   .featured-row {
-    grid-template-columns: repeat(3, 1fr);
-    padding: 0 40px 60px;
+    grid-template-columns: repeat(3, minmax(0, 280px));
+    justify-content: center;
+    gap: 64px;
+    padding: 8px 80px 36px;
   }
   .shops {
     grid-template-columns: 1.1fr 0.9fr;

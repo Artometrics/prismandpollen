@@ -1,15 +1,9 @@
 ---
 import Base from "../../components/Base.astro";
 import Ornament from "../../components/Ornament.astro";
-import Plate from "../../components/Plate.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import { formatUSD } from "../../lib/money";
-import {
-  getCollection,
-  products,
-  relatedProducts,
-  type Product,
-} from "../../data/catalog";
+import { products, relatedProducts, type Product } from "../../data/catalog";
 
 export function getStaticPaths() {
   return products.map((product) => ({
@@ -25,24 +19,6 @@ interface Props {
 const { product } = Astro.props;
 const price = Math.min(...product.variants.map((variant) => variant.price));
 const related = relatedProducts(product.handle);
-const collection = getCollection(
-  product.category === "Gift card"
-    ? "gift-cards"
-    : product.category.toLowerCase() === "shoes"
-      ? "shoes"
-      : {
-          Dresses: "dresses",
-          Skirts: "skirts",
-          Tops: "tops",
-          Knitwear: "knitwear",
-          Sweaters: "sweaters",
-          Pants: "pants",
-          Denim: "denim",
-          Outerwear: "outerwear",
-          Bags: "bags",
-          Slips: "slips",
-        }[product.category] ?? "new-arrivals",
-);
 const gift = product.kind === "gift-card";
 ---
 
@@ -51,29 +27,20 @@ const gift = product.kind === "gift-card";
     <div class="pdp-gallery">
       {
         product.images.map((image, index) => (
-          <Plate
-            image={image.src}
+          <img
+            class:list={["pdp-slide", { "is-active": index === 0 }]}
+            src={image.src}
             alt={index === 0 ? product.imageAlt : ""}
-            contain
           />
         ))
       }
     </div>
     <div class="pdp-info">
-      {
-        collection ? (
-          <a class="quiet" href={`/collections/${collection.handle}`}>
-            {collection.title}
-          </a>
-        ) : null
-      }
       <h1>{product.title}</h1>
       <Ornament />
       {product.color ? <p class="quiet">in {product.color}</p> : null}
+      <div class="pdp-swatch" aria-hidden="true"></div>
       <p data-pdp-price>{gift ? `From ${formatUSD(price)}` : formatUSD(price)}</p>
-      <p class="quiet">Public reference price. Not an offer. Stock unknown.</p>
-      <p class="quiet">{product.imageNote}</p>
-      <p class="quiet">{product.rights}</p>
       <form id="add-form" data-handle={product.handle} data-kind={product.kind}>
         <div class="size-list" data-size-group tabindex="-1" role="group" aria-label={gift ? "Amount" : "Size"}>
           {
@@ -109,8 +76,9 @@ const gift = product.kind === "gift-card";
             </button>
           )
         }
-        <p class="quiet">From $25.09/mo was on the reference page. Payments are off. This is not an offer.</p>
-        <p class="quiet">Payments are off. Adding a piece only keeps it in this browser.</p>
+        <p class="quiet">From $25.09/mo or 0% APR</p>
+        <p><button type="button" id="pay-note" class="linkish">Learn more</button></p>
+        <p id="pay-note-copy" class="quiet" hidden>That monthly line is a reference observation. Payments are off. It is not an offer.</p>
       </form>
       <div class="tabs" role="tablist" aria-label="Product notes">
         <button type="button" role="tab" data-tab="description" aria-selected="true">Description</button>

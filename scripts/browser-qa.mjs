@@ -103,6 +103,7 @@ async function exercise(width, height, label) {
       await shot(page, `${label}-collection`);
     } else {
       await page.getByRole("button", { name: "Shop", exact: true }).hover();
+      await shotView(page, `${label}-menu-open`);
       await page.getByRole("link", { name: "Dresses", exact: true }).first().click();
       await page.waitForURL("**/collections/dresses");
       await shot(page, `${label}-collection`);
@@ -136,6 +137,9 @@ async function exercise(width, height, label) {
     await page.goto(`${base}/products/quinn-dress-salt`, { waitUntil: "networkidle" });
     assert((await overflow(page)) <= 1, `${label} pdp overflows`);
     await shot(page, `${label}-pdp`);
+    const sizeM = page.getByRole("button", { name: "M", exact: true });
+    assert((await sizeM.getAttribute("aria-pressed")) !== "true", `${label} size M starts unselected`);
+    await shot(page, `${label}-pdp-before-size`);
     await page.getByRole("button", { name: "Select size" }).click();
     await page.locator("#size-error").waitFor({ state: "visible" });
     assert((await page.locator("#bag-count").innerText()) === "0", `${label} bag changed without a size`);

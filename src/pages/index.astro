@@ -37,17 +37,6 @@ const featured = [
   },
 ];
 
-const shops = [
-  "Brentwood Country Mart",
-  "Montecito Country Mart",
-  "West Village",
-  "Lido Marina Village",
-  "Sag Harbor",
-  "Marin Country Mart",
-  "Nantucket",
-  "Madison Ave",
-  "Wilmette",
-];
 ---
 
 <Base title="Prism & Pollen" description="Homepage preview from the captured reference. Nothing is for sale.">
@@ -133,22 +122,26 @@ const shops = [
               </button>
             ))}
           </div>
-          <p class="quiet">Homepage capture. Not part of the twelve-product handoff. Stock unknown.</p>
-        </article>
+          </article>
       ))
     }
   </div>
+  <p class="disclosure">Reference photographs and prices. Rights not cleared. Stock unknown. Payments, accounts, and checkout are off.</p>
 
   <section class="shops" id="shops">
     <img src="/campaign/SHOPS_HOMEPAGE.jpg" alt="Reference shop interior photograph. Not a Prism & Pollen store." />
     <div>
       <h2 class="script">Our Shops</h2>
-      <Ornament />
-      <p class="quiet">These names are from the reference capture. Prism &amp; Pollen has no published shops.</p>
-      <ul>
-        {shops.map((shop) => <li>{shop}</li>)}
-      </ul>
+      <div class="shop-rule"><Ornament /></div>
+      <p class="shop-lines">
+        <span>Brentwood Country Mart · Montecito Country Mart · West Village</span>
+        <span>Lido Marina Village · Sag Harbor</span>
+        <span>Marin Country Mart · Nantucket · Madison Ave</span>
+        <span>Wilmette</span>
+      </p>
+      <div class="shop-rule"><Ornament /></div>
       <a class="orn-btn" href="/pages/shops">Visit our stores</a>
+      <p class="quiet">Reference locations. Not Prism &amp; Pollen shops.</p>
     </div>
   </section>
 </Base>

@@ -78,6 +78,19 @@ Implemented from the overlapping home captures and the desktop plus mobile Quinn
 - Gift box $5 and free shipping over $500 are labeled reference observations, not offers. Checkout stays disabled.
 - Mobile arrival with M already selected was a URL variant, not a verified fresh tap. Gallery swipe, mobile size guide, and accordion motion were not captured.
 
+## Visual QA pass on the same branch
+
+Adjusted from the still-image review. Not a new feature set.
+
+- Hero uses a dark lower scrim, a smaller white title, and a light divider. Height is capped near 56–58vh. Exact reference crop was not measured in pixels.
+- Wordmark is lighter and more widely tracked. Icons use a 1px stroke.
+- Desktop Explore is taller, with a lighter script title. Mobile Explore keeps offsets and the floral background. Coats & jackets comes before Noir edit on small screens.
+- Featured cards sit in a narrower row with frame padding. The rights line is one note under the row.
+- Shop names are grouped lines between wide rules. The button has an outer rule. The line under it says these are reference locations.
+- Newsletter band is full width. The footer badge is a drawn cartouche.
+- Mobile product image is edge to edge. Dots sit on the image. The buy column no longer repeats the stock and rights paragraphs. Learn more reveals that the monthly line is not an offer.
+- A fresh mobile size tap was tested: S started unpressed, then Add to cart opened the bag. Exact open/close timing is still unknown.
+
 ## Held on purpose
 
-Homepage campaign, hero motion, and menu motion stay unimplemented until the new captures arrive. Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off. Nothing was deployed.
+Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off. Nothing was merged or deployed.
