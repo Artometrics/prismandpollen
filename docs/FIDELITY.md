@@ -103,6 +103,14 @@ Reference frames used: clone02 at 1365×1072 and 390×844, clone03 desktop cart 
 - Bag heading stays on one line. Subtotal and the disabled checkout sit at the bottom of the panel. Checkout remains disabled.
 - Dresses collection, filter drawer, and search use the twelve-product catalog. `sort_by=price-ascending` with `filter.v.price.gte=0` and an empty `filter.v.price.lte` is written while the drawer is open. Apply closes it. Search for dress reports 2 results, not 749. Escape closes search and the filter drawer. Open and close timing is still unmeasured.
 
+## Quinn mobile guide from clone05
+
+The capture counted 11 gallery slides and moved the pagination dot from 1 to 2 and back to 1. A gesture swipe was not used. This preview has the nine Quinn files already stored. Two slides were not in those files, and none were invented. Dot clicks are tested. Swipe timing and easing were not measured.
+
+Size S is variant `40107503124593`. Details holds the captured care line. There is no separate Care tab. The size guide is Quinn only: body inches and the captured bust centimeters, the visible garment columns, and the visible conversion columns. Waist and hip centimeters were off the mobile frame, so those cells stay in inches. Other garments do not get this chart.
+
+Timing, easing, and a gesture swipe remain unverified. The preview is a bounded representative storefront, not an exact clone of the whole reference site.
+
 ## Held on purpose
 
 Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off. Nothing was merged or deployed.

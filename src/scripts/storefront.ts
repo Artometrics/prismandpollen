@@ -173,8 +173,18 @@ function bindProductForm() {
       const variant = product?.variants.find((item) => item.id === button.dataset.variantId);
       const price = document.querySelector("[data-pdp-price]");
       if (variant && price) price.textContent = formatUSD(variant.price);
+      const url = new URL(window.location.href);
+      url.searchParams.set("variant", button.dataset.variantId ?? "");
+      window.history.replaceState(null, "", url);
     });
   });
+  const initialVariant = new URLSearchParams(window.location.search).get("variant");
+  if (initialVariant) {
+    const initialButton = form.querySelector<HTMLButtonElement>(
+      `[data-variant-id="${initialVariant}"]:not([disabled])`,
+    );
+    initialButton?.click();
+  }
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!product) return;
@@ -636,16 +646,10 @@ function bindExtras() {
     if (!(button instanceof HTMLButtonElement)) return;
     const toCm = button.getAttribute("aria-pressed") !== "true";
     button.setAttribute("aria-pressed", toCm ? "true" : "false");
-    document.querySelectorAll(".guide-table td").forEach((cell) => {
+    document.querySelectorAll(".guide-table [data-cm]").forEach((cell) => {
       if (!(cell instanceof HTMLElement)) return;
       if (!cell.dataset.in) cell.dataset.in = cell.textContent ?? "";
-      if (!toCm) {
-        cell.textContent = cell.dataset.in;
-        return;
-      }
-      cell.textContent = cell.dataset.in.replace(/\d+(?:\.\d+)?/g, (value) =>
-        String(Math.round(Number(value) * 2.54 * 10) / 10),
-      );
+      cell.textContent = toCm ? cell.dataset.cm ?? cell.dataset.in : cell.dataset.in;
     });
   });
 }

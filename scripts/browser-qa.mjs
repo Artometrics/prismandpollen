@@ -153,6 +153,14 @@ async function exercise(width, height, label) {
     await page.goto(`${base}/products/quinn-dress-salt`, { waitUntil: "networkidle" });
     assert((await overflow(page)) <= 1, `${label} pdp overflows`);
     await shot(page, `${label}-pdp`);
+    if (width < 900) {
+      const dots = page.locator(".gallery-dots button");
+      assert((await dots.count()) >= 2, `${label} gallery dots`);
+      await dots.nth(1).click();
+      assert((await dots.nth(1).getAttribute("aria-current")) === "true", `${label} dot 2`);
+      await dots.nth(0).click();
+      assert((await dots.nth(0).getAttribute("aria-current")) === "true", `${label} dot 1`);
+    }
     const sizeM = page.getByRole("button", { name: "M", exact: true });
     assert((await sizeM.getAttribute("aria-pressed")) !== "true", `${label} size M starts unselected`);
     await shot(page, `${label}-pdp-before-size`);
@@ -160,6 +168,28 @@ async function exercise(width, height, label) {
     await page.locator("#size-error").waitFor({ state: "visible" });
     assert((await page.locator("#bag-count").innerText()) === "0", `${label} bag changed without a size`);
     await shot(page, `${label}-size-required`);
+    await page.getByRole("button", { name: "S", exact: true }).click();
+    await page.waitForFunction(() => location.href.includes("variant=40107503124593"));
+    assert(/add to cart/i.test(await page.locator("#add-label").innerText()), `${label} S enables add`);
+    await page.getByRole("tab", { name: "Details" }).click();
+    await page.getByText("Hand Wash Cold").waitFor();
+    await page.getByRole("tab", { name: "Size & fit" }).click();
+    await page.getByRole("button", { name: "Click here for size guide" }).click();
+    const guide = page.getByRole("dialog", { name: /Quinn Dress/i });
+    await guide.waitFor();
+    await guide.getByRole("button", { name: "in | cm" }).click();
+    const bodyText = await guide.locator("[data-guide-panel='body']").innerText();
+    assert(bodyText.includes("82.5"), `${label} cm bust`);
+    assert(bodyText.includes("114–116"), `${label} cm range`);
+    await guide.getByRole("button", { name: "Garment" }).click();
+    const garmentText = await guide.locator("[data-guide-panel='garment']").innerText();
+    assert(garmentText.includes("Bust (extended)"), `${label} garment heading`);
+    assert(garmentText.includes("49"), `${label} garment bust`);
+    await guide.getByRole("button", { name: "Conversion" }).click();
+    const conversionText = await guide.locator("[data-guide-panel='conversion']").innerText();
+    assert(conversionText.includes("30"), `${label} conversion`);
+    await guide.getByRole("button", { name: "Close size guide" }).click();
+    await guide.waitFor({ state: "hidden" });
     await page.getByRole("button", { name: "M", exact: true }).click();
     await page.locator("#add-to-cart").click();
     const bag = page.getByRole("dialog", { name: /in your bag/i });
