@@ -1,0 +1,48 @@
+---
+import { collectionLinks, discoverLinks } from "../data/catalog";
+---
+
+<section class="notes" aria-label="Messages">
+  <h2 class="script">Stay in touch</h2>
+  <p class="lede">Email and SMS are off. This preview does not collect an address.</p>
+  <form id="newsletter-form" novalidate>
+    <label>
+      <span class="sr-only">Email</span>
+      <input type="email" name="email" placeholder="Not collected" disabled autocomplete="off" />
+    </label>
+    <button class="orn-btn" type="button" disabled>
+      <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
+      Sign up
+    </button>
+  </form>
+</section>
+<footer class="site-footer">
+  <p class="footer-mark">Prism &amp; Pollen</p>
+  <div class="footer-cols">
+    <div>
+      <h2>Shop</h2>
+      {collectionLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+    <div>
+      <h2>Discover</h2>
+      {discoverLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+    <div>
+      <h2>House</h2>
+      <a href="/pages/about">About — not published</a>
+      <a href="/pages/impact">Impact — not published</a>
+      <a href="/pages/shops">Shops — none published</a>
+      <a href="/journal">Journal</a>
+    </div>
+    <div>
+      <h2>Preview</h2>
+      <a href="/pages/privacy">Privacy — not published</a>
+      <a href="/pages/terms">Terms — not published</a>
+      <a href="/pages/contact">Contact — off</a>
+      <a href="/pages/account">Account — off</a>
+      <a href="/pages/provenance">Provenance</a>
+      <a href="/cart">Bag</a>
+    </div>
+  </div>
+  <p class="fine">Prototype · not for sale · no index · © {new Date().getFullYear()} Prism &amp; Pollen</p>
+</footer>

@@ -3,9 +3,12 @@
 # dependencies
 node_modules/
 
-# Expo
-.expo/
+# Astro
+.astro/
 dist/
+
+# Expo leftovers
+.expo/
 .firebase/
 web-build/
 expo-env.d.ts

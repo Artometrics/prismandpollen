@@ -1,0 +1,139 @@
+---
+import Base from "../../components/Base.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import {
+  collections,
+  productsIn,
+  uniqueLabels,
+  type Collection,
+  type Product,
+} from "../../data/catalog";
+
+export function getStaticPaths() {
+  return collections.map((collection) => ({
+    params: { handle: collection.handle },
+    props: { collection },
+  }));
+}
+
+interface Props {
+  collection: Collection;
+}
+
+const { collection } = Astro.props;
+const items: Product[] = productsIn(collection);
+const sizes = uniqueLabels(items, (product) => product.variants.map((variant) => variant.label));
+const colors = uniqueLabels(items, (product) => [product.color]);
+const categories = uniqueLabels(items, (product) => [product.category]);
+const sizeHeading = items.every((product) => product.kind === "gift-card") ? "Amount" : "Size";
+const bands = [
+  { id: "under-100", label: "Under $100" },
+  { id: "100-300", label: "$100 – $300" },
+  { id: "300-500", label: "$300 – $500" },
+  { id: "500-plus", label: "$500 and over" },
+];
+---
+
+<Base title={collection.title} description={collection.intro}>
+  <header class="collection-head">
+    <p class="quiet">Collection</p>
+    <h1 class="script">{collection.title}</h1>
+    <p class="lede">{collection.intro}</p>
+  </header>
+  <div class="toolbar">
+    <button id="filter-open" type="button" aria-controls="filter-dialog" aria-expanded="false">
+      Filter &amp; sort
+    </button>
+    <p><span data-count>{items.length}</span> in this preview</p>
+  </div>
+  <div class="product-grid" data-grid>
+    {items.map((product) => <ProductCard product={product} />)}
+  </div>
+  <p class="filter-empty" data-filter-empty hidden>Nothing in this preview matches those filters.</p>
+
+  <dialog class="drawer" id="filter-dialog" aria-labelledby="filter-title">
+    <div class="drawer-head">
+      <h2 class="script" id="filter-title">Filter &amp; sort</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close filters">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <h3>Sort by</h3>
+      <div class="sort-row">
+        <button type="button" data-sort="featured" aria-pressed="true">Featured</button>
+        <button type="button" data-sort="price-asc" aria-pressed="false">Price: low to high</button>
+        <button type="button" data-sort="price-desc" aria-pressed="false">Price: high to low</button>
+      </div>
+      <p class="quiet">Best-seller rank is off. There is no sales data.</p>
+      <div class="switch-row">
+        <span id="stock-label">In stock</span>
+        <button type="button" role="switch" aria-checked="false" aria-describedby="stock-note" disabled>
+          Off
+        </button>
+      </div>
+      <p id="stock-note" class="quiet">
+        Inventory is off. Availability is unverified, so this preview cannot filter by stock.
+      </p>
+      <div class="group">
+        <h3>{sizeHeading}</h3>
+        <div class="check-grid">
+          {
+            sizes.map((label) => (
+              <label class="check">
+                <input type="checkbox" name="size" value={label} />
+                {label}
+              </label>
+            ))
+          }
+        </div>
+      </div>
+      {
+        categories.length > 1 ? (
+          <div class="group">
+            <h3>Category</h3>
+            <div class="check-grid">
+              {categories.map((label) => (
+                <label class="check">
+                  <input type="checkbox" name="category" value={label} />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : null
+      }
+      <div class="group">
+        <h3>Color</h3>
+        <div class="check-grid">
+          {
+            colors.map((label) => (
+              <label class="check">
+                <input type="checkbox" name="color" value={label} />
+                {label}
+              </label>
+            ))
+          }
+        </div>
+      </div>
+      <div class="group">
+        <h3>Price</h3>
+        <div class="check-grid">
+          {
+            bands.map((band) => (
+              <label class="check">
+                <input type="checkbox" name="price" value={band.id} />
+                {band.label}
+              </label>
+            ))
+          }
+        </div>
+      </div>
+      <p class="quiet">Pattern, material, and length filters are omitted. This catalog does not record them.</p>
+      <div class="drawer-actions">
+        <button class="linkish" type="button" data-clear-filters>Clear all</button>
+        <button class="orn-btn" type="button" data-apply-filters>Apply</button>
+      </div>
+    </div>
+  </dialog>
+</Base>

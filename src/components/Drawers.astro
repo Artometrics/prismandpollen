@@ -1,0 +1,97 @@
+---
+import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
+---
+
+<dialog class="drawer menu-dialog" id="menu-dialog" aria-labelledby="menu-title">
+  <div class="menu-head">
+    <button class="icon-btn" type="button" data-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
+    </button>
+    <button class="icon-btn" id="menu-bag" type="button" aria-label="Open bag">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 8h12l-1 12H7L6 8Z"></path>
+        <path d="M9 8V7a3 3 0 0 1 6 0v1"></path>
+      </svg>
+    </button>
+  </div>
+  <div class="menu-body">
+    <p class="menu-kicker" id="menu-title">Menu</p>
+    <a class="menu-link" href="/collections/new-arrivals">New</a>
+    <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-shop">
+      Shop <span aria-hidden="true">↪</span>
+    </button>
+    <div class="acc-panel" id="acc-shop" hidden>
+      {
+        shopColumns.map((column) => (
+          <div>
+            <h2 class="quiet">{column.title}</h2>
+            {column.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+    <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-collections">
+      Collections <span aria-hidden="true">↪</span>
+    </button>
+    <div class="acc-panel" id="acc-collections" hidden>
+      {collectionLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+    <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-discover">
+      Discover <span aria-hidden="true">↪</span>
+    </button>
+    <div class="acc-panel" id="acc-discover" hidden>
+      {discoverLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+    <div class="menu-foot">
+      <a class="menu-link" href="/pages/account">Account <span class="quiet">off</span></a>
+      <a class="menu-link" href="/pages/assistance">Assistance <span class="quiet">off</span></a>
+      <a class="menu-link" href="/pages/currency">Currency <span class="quiet">USD only</span></a>
+      <a class="menu-link" href="/pages/shops">Find a shop <span class="quiet">none published</span></a>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="search-dialog" id="search-dialog" aria-labelledby="search-title">
+  <div class="search-head">
+    <h2 class="script" id="search-title">Search</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
+    </button>
+  </div>
+  <div class="search-body">
+    <form id="search-form" action="/search" method="get" role="search">
+      <label>
+        <span class="sr-only">Search the preview</span>
+        <input id="search-input" name="q" type="search" autocomplete="off" placeholder="Search this preview" />
+      </label>
+    </form>
+    <ul class="suggest" id="search-suggest"></ul>
+    <p class="quiet">Search stays in this browser. It does not call a store.</p>
+  </div>
+</dialog>
+
+<dialog class="drawer" id="cart-dialog" aria-labelledby="cart-title">
+  <div class="drawer-head">
+    <h2 class="script" id="cart-title">Your bag</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close bag">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
+    </button>
+  </div>
+  <div class="drawer-body" data-cart-root>
+    <p data-cart-empty>Your bag is empty.</p>
+    <p class="quiet" data-cart-empty-note>Nothing is reserved. Payments are off.</p>
+    <div data-cart-filled hidden>
+      <div data-cart-lines></div>
+      <p class="subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
+      <button class="orn-btn" type="button" data-checkout disabled>
+        <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
+        Checkout
+      </button>
+      <p class="quiet" id="pay-off">Payments are off. This bag stays on this device and is not an order.</p>
+      <p><a href="/cart">Open the bag page</a></p>
+    </div>
+  </div>
+</dialog>
+<p class="sr-only" id="cart-status" role="status"></p>

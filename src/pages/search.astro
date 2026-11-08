@@ -1,0 +1,17 @@
+---
+import Base from "../components/Base.astro";
+---
+
+<Base title="Search" description="Search the Prism & Pollen preview in this browser.">
+  <header class="page-head">
+    <h1 class="script">Search</h1>
+    <p class="lede" id="search-page-copy">Type a word to search this preview.</p>
+  </header>
+  <form class="page-search prose" action="/search" method="get" role="search">
+    <label>
+      <span class="sr-only">Search query</span>
+      <input id="search-page-input" name="q" type="search" autocomplete="off" />
+    </label>
+  </form>
+  <div class="prose stack" id="search-page-results"></div>
+</Base>

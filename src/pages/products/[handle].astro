@@ -1,0 +1,136 @@
+---
+import Base from "../../components/Base.astro";
+import Ornament from "../../components/Ornament.astro";
+import Plate from "../../components/Plate.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { formatUSD } from "../../lib/money";
+import {
+  getCollection,
+  products,
+  relatedProducts,
+  type Product,
+} from "../../data/catalog";
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { handle: product.handle },
+    props: { product },
+  }));
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const price = Math.min(...product.variants.map((variant) => variant.price));
+const related = relatedProducts(product.handle);
+const collection = getCollection(
+  product.category === "Gift card"
+    ? "gift-cards"
+    : product.category.toLowerCase() === "shoes"
+      ? "shoes"
+      : {
+          Dresses: "dresses",
+          Skirts: "skirts",
+          Tops: "tops",
+          Knitwear: "knitwear",
+          Sweaters: "sweaters",
+          Pants: "pants",
+          Denim: "denim",
+          Outerwear: "outerwear",
+          Bags: "bags",
+          Slips: "slips",
+        }[product.category] ?? "new-arrivals",
+);
+const gift = product.kind === "gift-card";
+---
+
+<Base title={product.title} description={product.description}>
+  <article class="pdp">
+    <Plate image={product.image} alt={product.imageAlt || product.title} swatch={product.swatch} contain={Boolean(product.image)} />
+    <div class="pdp-info">
+      {
+        collection ? (
+          <a class="quiet" href={`/collections/${collection.handle}`}>
+            {collection.title}
+          </a>
+        ) : null
+      }
+      <h1>{product.title}</h1>
+      <Ornament />
+      <p class="quiet">in {product.color}</p>
+      <p data-pdp-price>{gift ? `From ${formatUSD(price)}` : formatUSD(price)}</p>
+      <p class="quiet">Sample amount for this preview, not a live price.</p>
+      <div class="swatches">
+        <button class="swatch" type="button" aria-pressed="true" aria-label={`Color ${product.color}, only colorway in this preview`}>
+          <span style={`background:${product.swatch}`}></span>
+        </button>
+      </div>
+      <form id="add-form" data-handle={product.handle} data-kind={product.kind}>
+        <div class="size-list" data-size-group tabindex="-1" role="group" aria-label={gift ? "Amount" : "Size"}>
+          {
+            product.variants.map((variant, index) => (
+              <>
+                {index > 0 ? <span class="dot" aria-hidden="true">·</span> : null}
+                <button
+                  class="size-option"
+                  type="button"
+                  data-variant-id={variant.id}
+                  aria-pressed="false"
+                >
+                  {variant.label}
+                </button>
+              </>
+            ))
+          }
+        </div>
+        <p id="size-error" class="alert" role="alert" hidden></p>
+        {
+          gift ? (
+            <p class="quiet">Gift card issuance is off. Choosing an amount does not create a note.</p>
+            <button class="orn-btn" id="add-to-cart" type="button" disabled>
+              <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
+              Issuance off
+            </button>
+          ) : (
+            <button class="orn-btn" id="add-to-cart" type="submit">
+              <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
+              Add to cart
+            </button>
+          )
+        }
+        <p class="quiet">Payments are off. Adding a piece only keeps it in this browser.</p>
+      </form>
+      <div class="tabs" role="tablist" aria-label="Product notes">
+        <button type="button" role="tab" data-tab="description" aria-selected="true">Description</button>
+        <span aria-hidden="true">·</span>
+        <button type="button" role="tab" data-tab="details" aria-selected="false">Details</button>
+        <span aria-hidden="true">·</span>
+        <button type="button" role="tab" data-tab="fit" aria-selected="false">Size &amp; fit</button>
+      </div>
+      <div class="panel" data-panel="description" role="tabpanel">
+        <p>{product.description}</p>
+        <p class="quiet">Reviews are off.</p>
+      </div>
+      <div class="panel" data-panel="details" role="tabpanel" hidden>
+        <ul>
+          {product.details.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
+      <div class="panel" data-panel="fit" role="tabpanel" hidden>
+        <p>No size guide is published. Measurements were not taken, and availability is unverified.</p>
+      </div>
+    </div>
+  </article>
+  {
+    related.length > 0 ? (
+      <section class="section">
+        <h2 class="script">Also in the preview</h2>
+      </section>
+      <div class="product-grid">
+        {related.map((item) => <ProductCard product={item} />)}
+      </div>
+    ) : null
+  }
+</Base>

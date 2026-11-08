@@ -1,0 +1,27 @@
+---
+interface Props {
+  image?: string;
+  alt: string;
+  swatch?: string;
+  contain?: boolean;
+}
+const { image, alt, swatch = "#e6dccb", contain = false } = Astro.props;
+---
+
+<div class:list={["frame", { contain }]}>
+  {
+    image ? (
+      <img src={image} alt={alt} />
+    ) : (
+      <div class="plate-empty" style={`--swatch:${swatch}`}>
+        <svg viewBox="0 0 80 120" aria-hidden="true">
+          <path d="M40 8 62 108H18Z" />
+          <path d="M40 28c8 10 8 18 0 28-8-10-8-18 0-28Z" />
+          <path d="M40 46c10 8 16 10 22 8" />
+          <circle cx="40" cy="78" r="3" />
+        </svg>
+        <p>Photograph not supplied</p>
+      </div>
+    )
+  }
+</div>
