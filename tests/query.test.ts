@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { products } from "../src/data/catalog";
-import { applyQuery, emptyQuery, searchProducts } from "../src/lib/query";
+import { applyQuery, emptyQuery, searchProducts, sortFromParam, sortToParam } from "../src/lib/query";
 
 const apparel = products.filter((product) => product.kind === "apparel");
 
@@ -24,6 +24,18 @@ describe("query", () => {
     expect(sorted[0].handle).toBe("long-scoop-neck-slip-conch-2");
     const high = applyQuery(apparel, { ...emptyQuery(), sort: "price-desc" });
     expect(high[0].handle).toBe("germain-coat-light-khaki");
+  });
+
+  it("maps the reference price-ascending parameter", () => {
+    expect(sortToParam("price-asc")).toBe("price-ascending");
+    expect(sortFromParam("price-ascending")).toBe("price-asc");
+    expect(sortToParam("featured")).toBeNull();
+    const dress = searchProducts(products, "dress");
+    expect(dress.map((product) => product.handle)).toEqual([
+      "quinn-dress-salt",
+      "long-scoop-neck-slip-conch-2",
+    ]);
+    expect(dress).toHaveLength(2);
   });
 
   it("filters the salt colorway without inventing extra colors", () => {

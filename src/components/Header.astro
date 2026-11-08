@@ -34,16 +34,32 @@ import { collectionMenu, shopMenu } from "../data/menus";
             Shop
           </button>
           <div class="mega" id="mega-shop">
-            {
-              shopMenu.map((column) => (
-                <div>
-                  <h2>{column.title}</h2>
-                  {column.links.map((link) => (
-                    <a href={link.href}>{link.label}</a>
-                  ))}
-                </div>
-              ))
-            }
+            <div>
+              <h2>{shopMenu[0].title}</h2>
+              {shopMenu[0].links.map((link) => (
+                <a href={link.href}>{link.label}</a>
+              ))}
+            </div>
+            <div class="mega-stack">
+              <div>
+                <h2>{shopMenu[1].title}</h2>
+                {shopMenu[1].links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))}
+              </div>
+              <div>
+                <h2>{shopMenu[2].title}</h2>
+                {shopMenu[2].links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h2>{shopMenu[3].title}</h2>
+              {shopMenu[3].links.map((link) => (
+                <a href={link.href}>{link.label}</a>
+              ))}
+            </div>
             <a class="mega-photo" href="/#hero" tabindex="-1">
               <img src="/campaign/HP-NAVIGATION_HOLIDAY_1_2026_V1.jpg" alt="" />
             </a>

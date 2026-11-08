@@ -117,6 +117,7 @@ async function exercise(width, height, label) {
     await filters.waitFor({ state: "visible" });
     await shot(page, `${label}-filters`);
     await shotView(page, `${label}-filters-viewport`);
+    await filters.locator("summary", { hasText: "Size" }).click();
     await filters.getByRole("checkbox", { name: "27", exact: true }).check();
     await page.waitForTimeout(50);
     const visible = page.locator("[data-card]:not([hidden])");
@@ -127,12 +128,27 @@ async function exercise(width, height, label) {
     );
     await filters.getByRole("button", { name: "Clear all" }).click();
     await filters.getByRole("button", { name: "Price: low to high" }).click();
+    await page.waitForFunction(() => location.href.includes("sort_by=price-ascending"));
+    await page.waitForFunction(() => location.href.includes("filter.v.price.gte=0"));
+    assert(await filters.isVisible(), `${label} sort keeps the drawer open`);
     assert(
       (await page.locator("[data-card]:not([hidden])").first().getAttribute("data-handle")) ===
         "long-scoop-neck-slip-conch-2",
       `${label} price sort`,
     );
     await filters.getByRole("button", { name: "Apply" }).click();
+    await filters.waitFor({ state: "hidden" });
+    if (width < 900) {
+      await page.getByRole("button", { name: "Filter & sort" }).click();
+      await filters.waitFor({ state: "visible" });
+      await page.keyboard.press("Escape");
+      await filters.waitFor({ state: "hidden" });
+      await page.getByRole("button", { name: "Search" }).click();
+      const search = page.getByRole("dialog", { name: "Search" });
+      await search.waitFor({ state: "visible" });
+      await page.keyboard.press("Escape");
+      await search.waitFor({ state: "hidden" });
+    }
 
     await page.goto(`${base}/products/quinn-dress-salt`, { waitUntil: "networkidle" });
     assert((await overflow(page)) <= 1, `${label} pdp overflows`);
@@ -179,6 +195,10 @@ async function exercise(width, height, label) {
     assert((await page.locator("main [data-checkout]").isDisabled()) === true, `${label} checkout off`);
     await shot(page, `${label}-cart-page`);
 
+    await page.goto(`${base}/search?q=dress`, { waitUntil: "networkidle" });
+    await page.getByText("2 results for").waitFor();
+    assert(!(await page.content()).includes("749"), `${label} does not invent a result count`);
+    await shot(page, `${label}-search-dress`);
     await page.goto(`${base}/search?q=lavon`, { waitUntil: "networkidle" });
     await page.getByText("Lavon Linen Pant").waitFor();
     await shot(page, `${label}-search`);

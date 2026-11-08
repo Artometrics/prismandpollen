@@ -91,6 +91,18 @@ Adjusted from the still-image review. Not a new feature set.
 - Mobile product image is edge to edge. Dots sit on the image. The buy column no longer repeats the stock and rights paragraphs. Learn more reveals that the monthly line is not an offer.
 - A fresh mobile size tap was tested: S started unpressed, then Add to cart opened the bag. Exact open/close timing is still unknown.
 
+## Measured pass after 4211399, plus collection, filter, and search
+
+Reference frames used: clone02 at 1365×1072 and 390×844, clone03 desktop cart and PDP at 1365×1072, clone03 mobile PDP and cart, clone04 collection and search at 1365×900 and 390×844.
+
+- Desktop hero source is 2600×1300. Shown at full width with its own height, about 682px, so the face is in frame. The reference title spans about 324px. Desktop tracking is 0.2em at 16px. Mobile title is 20px.
+- Desktop Explore cards are larger and overlap the floral ground. Featured is three columns with 48px side padding and 36px gaps, not a 280px cap.
+- Shop names stay grouped between wide rules. The prototype sentence is in the footer, not in the shop or featured block.
+- Shop menu is three text columns. Lingerie sits under Shoes. The photograph is the right column, about 36% of the width. Mobile utility links sit at the bottom of the drawer.
+- Quinn’s title is 26px on desktop and 30px on a phone. The desktop gallery starts at the left edge. The handoff has one Quinn color, Salt, so one filled swatch is shown. A second color was not invented.
+- Bag heading stays on one line. Subtotal and the disabled checkout sit at the bottom of the panel. Checkout remains disabled.
+- Dresses collection, filter drawer, and search use the twelve-product catalog. `sort_by=price-ascending` with `filter.v.price.gte=0` and an empty `filter.v.price.lte` is written while the drawer is open. Apply closes it. Search for dress reports 2 results, not 749. Escape closes search and the filter drawer. Open and close timing is still unmeasured.
+
 ## Held on purpose
 
 Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off. Nothing was merged or deployed.

@@ -13,6 +13,18 @@ export type QueryState = {
   text: string;
 };
 
+export function sortToParam(sort: SortKey): string | null {
+  if (sort === "price-asc") return "price-ascending";
+  if (sort === "price-desc") return "price-descending";
+  return null;
+}
+
+export function sortFromParam(value: string | null): SortKey {
+  if (value === "price-ascending") return "price-asc";
+  if (value === "price-descending") return "price-desc";
+  return "featured";
+}
+
 export function emptyQuery(text = ""): QueryState {
   return {
     sort: "featured",

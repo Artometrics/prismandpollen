@@ -39,7 +39,10 @@ const gift = product.kind === "gift-card";
       <h1>{product.title}</h1>
       <Ornament />
       {product.color ? <p class="quiet">in {product.color}</p> : null}
-      <div class="pdp-swatch" aria-hidden="true"></div>
+      <div class="swatches" aria-label="Colors in this catalog">
+        <span class="swatch is-selected" title={product.color || "Color"} style="background:#e4d3bc"></span>
+      </div>
+      <p class="sr-only">Only the recorded colorway is shown. No other color was in the handoff.</p>
       <p data-pdp-price>{gift ? `From ${formatUSD(price)}` : formatUSD(price)}</p>
       <form id="add-form" data-handle={product.handle} data-kind={product.kind}>
         <div class="size-list" data-size-group tabindex="-1" role="group" aria-label={gift ? "Amount" : "Size"}>
@@ -89,7 +92,7 @@ const gift = product.kind === "gift-card";
       </div>
       <div class="panel" data-panel="description" role="tabpanel">
         <p>{product.description}</p>
-        <p class="quiet">This sentence is public reference copy. Reviews are off.</p>
+        <p class="sr-only">This sentence is public reference copy. Reviews are off.</p>
       </div>
       <div class="panel" data-panel="details" role="tabpanel" hidden>
         <p>Public page title: {product.pageTitle}.</p>

@@ -12,7 +12,15 @@ import {
   type Cart,
 } from "../lib/cart";
 import { formatUSD } from "../lib/money";
-import { applyQuery, searchProducts, type PriceBand, type QueryState, type SortKey } from "../lib/query";
+import {
+  applyQuery,
+  searchProducts,
+  sortFromParam,
+  sortToParam,
+  type PriceBand,
+  type QueryState,
+  type SortKey,
+} from "../lib/query";
 
 let cart: Cart = emptyCart();
 
@@ -110,9 +118,10 @@ function renderCart() {
 
 function openDialog(dialog: HTMLDialogElement | null, focus?: HTMLElement | null) {
   if (!dialog) return;
-  if (!dialog.open) dialog.showModal();
-  const buttonId = dialog.getAttribute("aria-labelledby");
-  void buttonId;
+  if (!dialog.open) {
+    if (dialog.dataset.overlay === "drop") dialog.show();
+    else dialog.showModal();
+  }
   (focus ?? dialog.querySelector<HTMLElement>("[data-close]"))?.focus();
 }
 
@@ -321,23 +330,58 @@ function bindDesktopMenus() {
   });
 }
 
+const trending = ["Silk", "Cardigan", "Skirt", "Henki", "White dress"];
+
 function renderSuggestions(list: HTMLElement, text: string) {
-  const matches = searchProducts(products, text).slice(0, 6);
+  const label = document.querySelector("#search-suggest-label");
+  const previews = document.querySelector("#search-previews");
   list.replaceChildren();
-  if (!text.trim()) return;
-  if (matches.length === 0) {
-    const item = document.createElement("li");
-    item.textContent = "No matches in this preview.";
-    list.append(item);
+  if (previews) previews.replaceChildren();
+  const query = text.trim();
+  if (!query) {
+    if (label) label.textContent = "Trending";
+    for (const term of trending) {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = `/search?q=${encodeURIComponent(term)}`;
+      link.textContent = term;
+      item.append(link);
+      list.append(item);
+    }
     return;
   }
-  for (const product of matches) {
+  if (label) label.textContent = "Suggestions";
+  const matches = searchProducts(products, query).slice(0, 6);
+  const suggestions = [query, ...matches.map((product) => product.title)];
+  const seen = new Set<string>();
+  for (const suggestion of suggestions) {
+    const key = suggestion.toLocaleLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
     const item = document.createElement("li");
     const link = document.createElement("a");
-    link.href = `/products/${product.handle}`;
-    link.textContent = `${product.title} — ${product.color}`;
+    link.href = `/search?q=${encodeURIComponent(suggestion)}`;
+    link.textContent = suggestion;
     item.append(link);
     list.append(item);
+  }
+  if (!previews) return;
+  for (const product of matches) {
+    const link = document.createElement("a");
+    link.className = "preview-card";
+    link.href = `/products/${product.handle}`;
+    if (product.image) {
+      const img = document.createElement("img");
+      img.src = product.image;
+      img.alt = "";
+      link.append(img);
+    }
+    const title = document.createElement("span");
+    title.textContent = product.title;
+    const price = document.createElement("span");
+    price.textContent = formatUSD(Math.min(...product.variants.map((variant) => variant.price)));
+    link.append(title, price);
+    previews.append(link);
   }
 }
 
@@ -349,46 +393,23 @@ function bindSearch() {
   const listNode = document.querySelector("#search-suggest");
   const list = listNode instanceof HTMLElement ? listNode : null;
   wireDialog(asElement("#search-open"), dialog, input);
+  if (list) renderSuggestions(list, "");
   input?.addEventListener("input", () => {
     if (list) renderSuggestions(list, input.value);
   });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && dialog?.open) dialog.close();
+  });
   const pageInput = document.querySelector<HTMLInputElement>("#search-page-input");
-  const pageResults = document.querySelector<HTMLElement>("#search-page-results");
-  const pageCopy = document.querySelector<HTMLElement>("#search-page-copy");
-  if (pageInput && pageResults && pageCopy) {
+  if (pageInput) {
     const params = new URLSearchParams(window.location.search);
-    const initial = params.get("q") ?? "";
-    pageInput.value = initial;
-    const paint = () => {
-      const query = pageInput.value;
-      const found = searchProducts(products, query);
-      pageResults.replaceChildren();
-      if (!query.trim()) {
-        pageCopy.textContent = "Type a word to search this preview.";
-        return;
-      }
-      pageCopy.textContent =
-        found.length === 0
-          ? `No matches for “${query}”.`
-          : `${found.length} match${found.length === 1 ? "" : "es"} for “${query}”.`;
-      for (const product of found) {
-        const link = document.createElement("a");
-        link.className = "card";
-        link.href = `/products/${product.handle}`;
-        link.textContent = `${product.title} — ${product.color}`;
-        const wrap = document.createElement("article");
-        wrap.append(link);
-        pageResults.append(wrap);
-      }
-    };
-    pageInput.addEventListener("input", () => {
-      const url = new URL(window.location.href);
-      url.searchParams.set("q", pageInput.value);
-      window.history.replaceState(null, "", url);
-      paint();
-    });
-    paint();
+    pageInput.value = params.get("q") ?? "";
   }
+  document.querySelector("#search-page-clear")?.addEventListener("click", () => {
+    if (!pageInput) return;
+    pageInput.value = "";
+    pageInput.dispatchEvent(new Event("input"));
+  });
 }
 
 function readQuery(): QueryState {
@@ -398,14 +419,52 @@ function readQuery(): QueryState {
     [...document.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map(
       (input) => input.value,
     );
+  const searchInput = document.querySelector<HTMLInputElement>("#search-page-input");
   return {
     sort,
     sizes: checked("size"),
     categories: checked("category"),
     colors: checked("color"),
     priceBands: checked("price") as PriceBand[],
-    text: "",
+    text: searchInput?.value ?? "",
   };
+}
+
+function writeFilterUrl(state: QueryState) {
+  const url = new URL(window.location.href);
+  const sort = sortToParam(state.sort);
+  if (sort) url.searchParams.set("sort_by", sort);
+  else url.searchParams.delete("sort_by");
+  if (state.sort === "price-asc") {
+    const floors: Record<PriceBand, number> = {
+      "under-100": 0,
+      "100-300": 100,
+      "300-500": 300,
+      "500-plus": 500,
+    };
+    const caps: Record<PriceBand, number | ""> = {
+      "under-100": 100,
+      "100-300": 300,
+      "300-500": 500,
+      "500-plus": "",
+    };
+    const gte = state.priceBands.length
+      ? Math.min(...state.priceBands.map((band) => floors[band]))
+      : 0;
+    const finiteCaps = state.priceBands
+      .map((band) => caps[band])
+      .filter((value): value is number => value !== "");
+    url.searchParams.set("filter.v.price.gte", String(gte));
+    url.searchParams.set("filter.v.price.lte", finiteCaps.length ? String(Math.max(...finiteCaps)) : "");
+  } else {
+    url.searchParams.delete("filter.v.price.gte");
+    url.searchParams.delete("filter.v.price.lte");
+  }
+  if (document.querySelector("[data-search-page]")) {
+    if (state.text) url.searchParams.set("q", state.text);
+    else url.searchParams.delete("q");
+  }
+  window.history.replaceState(null, "", url);
 }
 
 function bindFilters() {
@@ -423,7 +482,16 @@ function bindFilters() {
     .filter((product): product is NonNullable<typeof product> => Boolean(product));
 
   const apply = () => {
-    const result = applyQuery(subset, readQuery());
+    const state = readQuery();
+    const searching = Boolean(document.querySelector("[data-search-page]"));
+    const result = searching && !state.text.trim() ? [] : applyQuery(subset, state);
+    writeFilterUrl(state);
+    const copy = document.querySelector("#search-page-copy");
+    if (copy) {
+      copy.textContent = !state.text.trim()
+        ? "Type a word to search this preview."
+        : `${result.length} result${result.length === 1 ? "" : "s"} for “${state.text.trim()}”.`;
+    }
     const rank = new Map(result.map((product, index) => [product.handle, index]));
     const cards = [...grid.querySelectorAll<HTMLElement>("[data-card]")];
     const visible: HTMLElement[] = [];
@@ -442,7 +510,10 @@ function bindFilters() {
       grid.appendChild(card);
     }
     const empty = document.querySelector<HTMLElement>("[data-filter-empty]");
-    if (empty) empty.hidden = result.length !== 0;
+    if (empty) {
+      const showEmpty = searching ? state.text.trim() !== "" && result.length === 0 : result.length === 0;
+      empty.hidden = !showEmpty;
+    }
     const count = document.querySelector("[data-count]");
     if (count) count.textContent = String(result.length);
   };
@@ -469,6 +540,14 @@ function bindFilters() {
     apply();
     if (dialog?.open) dialog.close();
   });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && dialog?.open) dialog.close();
+  });
+  const initialSort = sortFromParam(new URLSearchParams(window.location.search).get("sort_by"));
+  dialog?.querySelectorAll<HTMLButtonElement>("[data-sort]").forEach((button) => {
+    button.setAttribute("aria-pressed", button.dataset.sort === initialSort ? "true" : "false");
+  });
+  document.querySelector("#search-page-input")?.addEventListener("input", () => apply());
   apply();
 }
 
