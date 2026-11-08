@@ -22,9 +22,13 @@ const { article } = Astro.props;
     <h1 class="script">{article.title}</h1>
     <p class="lede">{article.dek}</p>
   </header>
-  <figure class="article-figure frame">
-    <img src={article.image} alt={article.imageAlt} />
-  </figure>
+  {
+    article.image ? (
+      <figure class="article-figure frame">
+        <img src={article.image} alt={article.imageAlt ?? ""} />
+      </figure>
+    ) : null
+  }
   <div class="prose">
     {article.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
   </div>

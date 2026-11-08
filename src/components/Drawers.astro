@@ -1,5 +1,5 @@
 ---
-import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
+import { collectionMenu, shopMenu } from "../data/menus";
 ---
 
 <dialog class="drawer menu-dialog" id="menu-dialog" aria-labelledby="menu-title">
@@ -18,11 +18,11 @@ import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
     <p class="menu-kicker" id="menu-title">Menu</p>
     <a class="menu-link" href="/collections/new-arrivals">New</a>
     <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-shop">
-      Shop <span aria-hidden="true">↪</span>
+      Shop <span class="menu-arrow" aria-hidden="true"></span>
     </button>
     <div class="acc-panel" id="acc-shop" hidden>
       {
-        shopColumns.map((column) => (
+        shopMenu.map((column) => (
           <div>
             <h2 class="quiet">{column.title}</h2>
             {column.links.map((link) => (
@@ -33,64 +33,80 @@ import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
       }
     </div>
     <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-collections">
-      Collections <span aria-hidden="true">↪</span>
+      Collections <span class="menu-arrow" aria-hidden="true"></span>
     </button>
     <div class="acc-panel" id="acc-collections" hidden>
-      {collectionLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      {
+        collectionMenu.map((column) => (
+          <div>
+            <h2 class="quiet">{column.title}</h2>
+            {column.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        ))
+      }
     </div>
-    <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-discover">
-      Discover <span aria-hidden="true">↪</span>
-    </button>
-    <div class="acc-panel" id="acc-discover" hidden>
-      {discoverLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-    </div>
+    <a class="menu-link" href="/journal">Discover <span class="menu-arrow" aria-hidden="true"></span></a>
     <div class="menu-foot">
-      <a class="menu-link" href="/pages/account">Account <span class="quiet">off</span></a>
-      <a class="menu-link" href="/pages/assistance">Assistance <span class="quiet">off</span></a>
-      <a class="menu-link" href="/pages/currency">Currency <span class="quiet">USD only</span></a>
-      <a class="menu-link" href="/pages/shops">Find a shop <span class="quiet">none published</span></a>
+      <a class="menu-link" href="/pages/account">Account <span class="menu-arrow" aria-hidden="true"></span></a>
+      <a class="menu-link" href="/pages/assistance">Assistance <span class="menu-arrow" aria-hidden="true"></span></a>
+      <a class="menu-link" href="/pages/currency">Currency <span class="menu-arrow" aria-hidden="true"></span></a>
+      <a class="menu-link" href="/pages/shops">Find a shop <span class="menu-arrow" aria-hidden="true"></span></a>
     </div>
   </div>
 </dialog>
 
-<dialog class="search-dialog" id="search-dialog" aria-labelledby="search-title">
-  <div class="search-head">
-    <h2 class="script" id="search-title">Search</h2>
+<dialog class="search-dialog" id="search-dialog" data-overlay="drop" aria-labelledby="search-title">
+  <div class="search-sheet">
+  <div class="search-bar">
+    <form id="search-form" action="/search" method="get" role="search">
+      <label class="search-field">
+        <span id="search-title">Search</span>
+        <input id="search-input" name="q" type="search" autocomplete="off" />
+      </label>
+      <button class="icon-btn" type="submit" aria-label="Submit search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M16 16.5 20 21"></path></svg>
+      </button>
+    </form>
     <button class="icon-btn" type="button" data-close aria-label="Close search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
     </button>
   </div>
   <div class="search-body">
-    <form id="search-form" action="/search" method="get" role="search">
-      <label>
-        <span class="sr-only">Search the preview</span>
-        <input id="search-input" name="q" type="search" autocomplete="off" placeholder="Search this preview" />
-      </label>
-    </form>
+    <p class="suggest-label" id="search-suggest-label">Trending</p>
     <ul class="suggest" id="search-suggest"></ul>
-    <p class="quiet">Search stays in this browser. It does not call a store.</p>
+    <div class="search-previews" id="search-previews"></div>
+    <p class="sr-only">Suggestions are from this preview catalog. Search does not call a store.</p>
+  </div>
   </div>
 </dialog>
 
-<dialog class="drawer" id="cart-dialog" aria-labelledby="cart-title">
+<dialog class="drawer cart-drawer" id="cart-dialog" aria-labelledby="cart-title">
   <div class="drawer-head">
-    <h2 class="script" id="cart-title">Your bag</h2>
+    <h2 class="bag-title" id="cart-title">In your bag</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close bag">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
     </button>
   </div>
-  <div class="drawer-body" data-cart-root>
-    <p data-cart-empty>Your bag is empty.</p>
-    <p class="quiet" data-cart-empty-note>Nothing is reserved. Payments are off.</p>
-    <div data-cart-filled hidden>
-      <div data-cart-lines></div>
+  <div class="vine-rule" aria-hidden="true"></div>
+  <div class="drawer-body cart-panel" data-cart-root>
+    <div class="cart-main">
+      <p data-cart-empty hidden>Your cart is empty</p>
+      <div data-cart-filled hidden>
+        <div data-cart-lines></div>
+      </div>
+    </div>
+    <div class="cart-foot">
       <p class="subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
-      <button class="orn-btn" type="button" data-checkout disabled>
+      <div class="vine-rule" aria-hidden="true"></div>
+      <label class="gift-line"><input type="checkbox" disabled /> Add gift box | $5</label>
+      <p class="ship-line">Free shipping on all orders over $500</p>
+      <button class="orn-btn checkout-btn" type="button" data-checkout disabled>
         <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
         Checkout
       </button>
-      <p class="quiet" id="pay-off">Payments are off. This bag stays on this device and is not an order.</p>
-      <p><a href="/cart">Open the bag page</a></p>
+      <p class="quiet" id="pay-off">Payments are off. Not an offer. This bag is not an order.</p>
     </div>
   </div>
 </dialog>
