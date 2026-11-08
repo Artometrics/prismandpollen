@@ -22,9 +22,9 @@ const priceLabel =
   data-sizes={product.variants.map((variant) => variant.label).join("|")}
 >
   <a class="card" href={`/products/${product.handle}`}>
-    <Plate image={product.image} alt="" swatch={product.swatch} contain={Boolean(product.image)} />
+    <Plate image={product.image} alt="" contain={Boolean(product.image)} />
     <h2>{product.title}</h2>
-    <p class="meta">{product.color}</p>
+    <p class="meta">{product.color || "Reference"}</p>
     <p class="price">{priceLabel}</p>
   </a>
 </article>

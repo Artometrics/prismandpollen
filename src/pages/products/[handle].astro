@@ -48,7 +48,17 @@ const gift = product.kind === "gift-card";
 
 <Base title={product.title} description={product.description}>
   <article class="pdp">
-    <Plate image={product.image} alt={product.imageAlt || product.title} swatch={product.swatch} contain={Boolean(product.image)} />
+    <div class="pdp-gallery">
+      {
+        product.images.map((image, index) => (
+          <Plate
+            image={image.src}
+            alt={index === 0 ? product.imageAlt : ""}
+            contain
+          />
+        ))
+      }
+    </div>
     <div class="pdp-info">
       {
         collection ? (
@@ -59,14 +69,11 @@ const gift = product.kind === "gift-card";
       }
       <h1>{product.title}</h1>
       <Ornament />
-      <p class="quiet">in {product.color}</p>
+      {product.color ? <p class="quiet">in {product.color}</p> : null}
       <p data-pdp-price>{gift ? `From ${formatUSD(price)}` : formatUSD(price)}</p>
-      <p class="quiet">Sample amount for this preview, not a live price.</p>
-      <div class="swatches">
-        <button class="swatch" type="button" aria-pressed="true" aria-label={`Color ${product.color}, only colorway in this preview`}>
-          <span style={`background:${product.swatch}`}></span>
-        </button>
-      </div>
+      <p class="quiet">Public reference price. Not an offer. Stock unknown.</p>
+      <p class="quiet">{product.imageNote}</p>
+      <p class="quiet">{product.rights}</p>
       <form id="add-form" data-handle={product.handle} data-kind={product.kind}>
         <div class="size-list" data-size-group tabindex="-1" role="group" aria-label={gift ? "Amount" : "Size"}>
           {
@@ -111,15 +118,15 @@ const gift = product.kind === "gift-card";
       </div>
       <div class="panel" data-panel="description" role="tabpanel">
         <p>{product.description}</p>
-        <p class="quiet">Reviews are off.</p>
+        <p class="quiet">This sentence is public reference copy. Reviews are off.</p>
       </div>
       <div class="panel" data-panel="details" role="tabpanel" hidden>
-        <ul>
-          {product.details.map((line) => <li>{line}</li>)}
-        </ul>
+        <p>Public page title: {product.pageTitle}.</p>
+        <p>Availability was not in the handoff. Stock and fulfillment are off.</p>
+        {product.pageTitle.includes("Flan") ? <p>The public title says Flan Beads. The variant option says Champagne.</p> : null}
       </div>
       <div class="panel" data-panel="fit" role="tabpanel" hidden>
-        <p>No size guide is published. Measurements were not taken, and availability is unverified.</p>
+        <p>The size guide was not in the supplied capture. No measurements are invented. Availability is unverified.</p>
       </div>
     </div>
   </article>

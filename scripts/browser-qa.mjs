@@ -115,19 +115,19 @@ async function exercise(width, height, label) {
     const visible = page.locator("[data-card]:not([hidden])");
     assert((await visible.count()) === 1, `${label} size 27 should leave one piece`);
     assert(
-      (await visible.first().getAttribute("data-handle")) === "river-jean",
+      (await visible.first().getAttribute("data-handle")) === "diana-mid-rise-jean-marville-wash",
       `${label} size 27 piece`,
     );
     await filters.getByRole("button", { name: "Clear all" }).click();
     await filters.getByRole("button", { name: "Price: low to high" }).click();
     assert(
       (await page.locator("[data-card]:not([hidden])").first().getAttribute("data-handle")) ===
-        "petal-slip",
+        "long-scoop-neck-slip-conch-2",
       `${label} price sort`,
     );
     await filters.getByRole("button", { name: "Apply" }).click();
 
-    await page.goto(`${base}/products/column-dress-chalk`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/products/quinn-dress-salt`, { waitUntil: "networkidle" });
     assert((await overflow(page)) <= 1, `${label} pdp overflows`);
     await shot(page, `${label}-pdp`);
     await page.getByRole("button", { name: "Add to cart" }).click();
@@ -140,12 +140,12 @@ async function exercise(width, height, label) {
     await bag.waitFor({ state: "visible" });
     assert((await bag.locator("[data-line]").count()) === 1, `${label} first line`);
 
-    await page.goto(`${base}/products/river-jean`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/products/diana-mid-rise-jean-marville-wash`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "27", exact: true }).click();
     await page.getByRole("button", { name: "Add to cart" }).click();
     await bag.waitFor({ state: "visible" });
     assert((await bag.locator("[data-line]").count()) === 2, `${label} two lines`);
-    await bag.getByRole("button", { name: "Increase quantity of Column Dress" }).click();
+    await bag.getByRole("button", { name: "Increase quantity of Quinn Dress" }).click();
     await page.waitForTimeout(50);
     assert((await bag.locator("[data-qty-value]").first().innerText()) === "2", `${label} qty plus`);
     assert((await bag.locator("[data-cart-subtotal]").innerText()) === "$804", `${label} subtotal`);
@@ -158,7 +158,7 @@ async function exercise(width, height, label) {
     assert((await bag.locator("[data-qty-value]").first().innerText()) === "2", `${label} reload qty`);
     await bag.getByRole("button", { name: "Remove" }).first().click();
     assert((await bag.locator("[data-line]").count()) === 1, `${label} first-click remove`);
-    await bag.getByRole("button", { name: "Decrease quantity of River Jean" }).click();
+    await bag.getByRole("button", { name: "Decrease quantity of Diana Mid Rise Jean" }).click();
     await bag.getByText("Your bag is empty.").waitFor();
     await shot(page, `${label}-cart-empty`);
     await page.reload({ waitUntil: "networkidle" });
@@ -167,14 +167,14 @@ async function exercise(width, height, label) {
     assert((await page.locator("main [data-checkout]").isDisabled()) === true, `${label} checkout off`);
     await shot(page, `${label}-cart-page`);
 
-    await page.goto(`${base}/search?q=trouser`, { waitUntil: "networkidle" });
-    await page.getByText("Chalk Trouser").waitFor();
+    await page.goto(`${base}/search?q=lavon`, { waitUntil: "networkidle" });
+    await page.getByText("Lavon Linen Pant").waitFor();
     await shot(page, `${label}-search`);
     await page.goto(`${base}/search?q=zzzz-not-a-piece`, { waitUntil: "networkidle" });
     await page.getByText(/No matches/).waitFor();
     await shot(page, `${label}-search-empty`);
 
-    await page.goto(`${base}/products/gift-note`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/products/digital-gift-card`, { waitUntil: "networkidle" });
     assert((await page.locator("#add-to-cart").isDisabled()) === true, `${label} gift issuance`);
     await page.getByText(/issuance is off/i).first().waitFor();
     await shot(page, `${label}-gift`);
@@ -185,7 +185,7 @@ async function exercise(width, height, label) {
     assert((await page.locator("#newsletter-form").getAttribute("action")) === null, `${label} email action`);
     await shot(page, `${label}-contact`);
 
-    await page.goto(`${base}/journal`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/journal/not-captured`, { waitUntil: "networkidle" });
     await shot(page, `${label}-journal`);
     await page.goto(`${base}/pages/lookbook`, { waitUntil: "networkidle" });
     await shot(page, `${label}-lookbook`);

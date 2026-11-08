@@ -2,7 +2,7 @@
 
 Static Astro preview of a paper-ground clothing edit. Representative pages only — not a full catalog clone. Payments, accounts, email, SMS, reviews, gift-card issuance, inventory, and fulfillment are off. The bag stays in this browser.
 
-Photographs already in the repo are reused. Their commercial clearance is unknown. See `docs/PROVENANCE.md`. Pages send `noindex` and `robots.txt` disallows crawlers.
+The twelve products are the supplied reference catalog. Rights are not cleared and stock is unknown. See `docs/PROVENANCE.md` and `docs/FIDELITY.md`. Pages send `noindex` and `robots.txt` disallows crawlers. The campaign homepage and motion are waiting on new captures.
 
 ## Commands
 

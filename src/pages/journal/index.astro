@@ -11,18 +11,20 @@ import { articles } from "../../data/catalog";
   </header>
   <div class="explore-grid">
     {
-      articles.map((article) => (
-        <a class="story" href={`/journal/${article.slug}`}>
-          <img src={article.image} alt={article.imageAlt} />
-          <span class="story-label">
-            Read
-            <i class="gem a" />
-            <i class="gem b" />
-            <i class="gem c" />
-            <i class="gem d" />
-          </span>
-        </a>
-      ))
+      articles.map((article) =>
+        article.image ? (
+          <a class="story" href={`/journal/${article.slug}`}>
+            <img src={article.image} alt={article.imageAlt ?? ""} />
+            <span class="story-label">
+              Read
+              <i class="gem a" />
+              <i class="gem b" />
+              <i class="gem c" />
+              <i class="gem d" />
+            </span>
+          </a>
+        ) : null,
+      )
     }
   </div>
   <div class="prose">

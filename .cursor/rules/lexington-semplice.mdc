@@ -6,7 +6,7 @@ alwaysApply: true
 # Prism & Pollen
 
 - The Semplice theme and the Expo scaffold were replaced by this Astro preview. Do not restore them unless asked.
-- Brand is Prism & Pollen. Do not impersonate DÔEN or ship reference titles, SKUs, or photography.
+- The wordmark is Prism & Pollen. The twelve product records are the supplied reference catalog, with rights not cleared and stock unknown. Do not invent substitute products. Do not embed unidentified commercial fonts or invent uncaptured motion.
 - Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off and labeled as off.
 - Do not invent policies, history, shops, or contact details.
 - Keep `noindex`, `robots.txt`, and the hosting `X-Robots-Tag` headers.

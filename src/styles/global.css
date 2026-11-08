@@ -458,6 +458,11 @@ input:disabled {
   padding-bottom: 40px;
 }
 
+.pdp-gallery {
+  display: grid;
+  gap: 12px;
+}
+
 .pdp-info {
   text-align: center;
   padding: 12px 18px 24px;

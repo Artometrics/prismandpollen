@@ -1,33 +1,29 @@
 # Prism & Pollen provenance
 
-Prism & Pollen is an original prototype. It is not DÔEN and it does not sell DÔEN goods.
+Prism & Pollen is the name on this preview. It is not the reference house and it does not sell those goods.
 
-## What was used as a reference
+## Catalog
 
-Public pages on `https://www.shopdoen.com/` were studied as a structural reference only: route families, a twelve-piece variant matrix, and eight screenshots. Layout habits taken from those screenshots are a warm paper ground, capital serif navigation, script section titles, and thin frames around plates.
+`src/data/reference-catalog.json` is the twelve-product handoff plus images taken from ordinary public product HTML on 8 November 2026. Files are in `public/reference/`. Rights are not cleared. Stock is unknown. Prices are the public amounts, not an offer.
 
-The reference captures are incomplete. These states were **not** visually verified:
+These public `og:image` files name a different garment and are not used:
 
-- Mobile collection, product, cart, and search
-- Cart drawer (it was intentionally not opened on the reference site)
-- Desktop home from header to footer (the capture is a viewport with the shop menu open)
-- Desktop collection footer (the capture stops at a 16384px cap)
-- Size guide, details tabs, editorial pages, support pages, store pages, and the 404
+- Sebastiane Skirt: a Lois tank campaign frame
+- The Jane Blouse: a Shep jean frame
+- Lavon Linen Pant: a Monttee frame
 
-Sample US dollar amounts follow the public category price points so size runs can be checked. They are not a Prism & Pollen price list. Reference titles, SKUs, variant ids, and image URLs are not shipped.
+Sebastiane’s stored image is the named flat lay only.
 
-## Photographs
+The studio photographs in `public/brand/` were a substitute catalog. They are no longer used as the products.
 
-The plates in `public/brand/` are the studio photographs that were already in this repository (`assets/brand/` before this build). Commercial clearance is unknown. They are not reference-site photography. Where no photograph matched a record, the frame says “Photograph not supplied.”
+## Captures
 
-`noir-dress.jpeg` is an extra studio plate used only as an editorial image. It is not a separate catalog piece.
+The supplied screenshots do not include mobile collection, product, cart, or search; a full desktop home; a collection footer; or any motion. Those states are not filled in from memory. The ledger is `docs/FIDELITY.md`.
 
-## What is off
+## Off
 
-Payments, accounts, email, SMS, contact forms, reviews, gift-card issuance, inventory, and fulfillment are off. No privacy policy, terms, founding story, impact claim, shop, address, or phone number is invented.
-
-The bag is stored in `localStorage` under `prism-pollen.cart.v1`. It is not an order.
+Payments, accounts, email, SMS, reviews, gift-card issuance, inventory, and fulfillment are off. No policy, history, shop, or contact detail is invented. The bag stays in `localStorage` under `prism-pollen.cart.v1`.
 
 ## Indexing
 
-`public/robots.txt` disallows all crawlers. Every page sends `noindex, nofollow`. `public/_headers`, `netlify.toml`, and `firebase.json` set `X-Robots-Tag` for hosts that honor them. Nothing in this change was deployed.
+`robots.txt`, the page meta tag, and `X-Robots-Tag` in `firebase.json`, `netlify.toml`, and `public/_headers` ask crawlers not to index this prototype. This branch was not deployed.
