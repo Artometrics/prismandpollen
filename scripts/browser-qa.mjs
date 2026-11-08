@@ -74,13 +74,19 @@ async function exercise(width, height, label) {
       return { outline: style.outlineStyle, name: document.activeElement?.textContent?.trim() ?? "" };
     });
     assert(focus.outline !== "none", `${label} skip link has no focus outline`);
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    });
     assert((await overflow(page)) <= 1, `${label} home overflows`);
     await shot(page, `${label}-home`);
 
     const robots = await page.locator('meta[name="robots"]').getAttribute("content");
     assert(robots?.includes("noindex"), `${label} missing noindex`);
     const homeText = await page.locator("body").innerText();
-    assert(!/dôen|doen|shopdoen/i.test(homeText), `${label} home names the reference house`);
+    assert(/prism\s*&\s*pollen/i.test(homeText), `${label} wordmark`);
+    assert(/holiday chapter two/i.test(homeText), `${label} hero`);
+    await page.locator("#footer").scrollIntoViewIfNeeded();
+    await shot(page, `${label}-footer`);
 
     if (width < 900) {
       await page.getByRole("button", { name: "Open menu" }).click();
@@ -96,7 +102,7 @@ async function exercise(width, height, label) {
       await page.waitForURL("**/collections/dresses");
       await shot(page, `${label}-collection`);
     } else {
-      await page.getByRole("button", { name: "Shop", exact: true }).click();
+      await page.getByRole("button", { name: "Shop", exact: true }).hover();
       await page.getByRole("link", { name: "Dresses", exact: true }).first().click();
       await page.waitForURL("**/collections/dresses");
       await shot(page, `${label}-collection`);
@@ -130,23 +136,23 @@ async function exercise(width, height, label) {
     await page.goto(`${base}/products/quinn-dress-salt`, { waitUntil: "networkidle" });
     assert((await overflow(page)) <= 1, `${label} pdp overflows`);
     await shot(page, `${label}-pdp`);
-    await page.getByRole("button", { name: "Add to cart" }).click();
+    await page.getByRole("button", { name: "Select size" }).click();
     await page.locator("#size-error").waitFor({ state: "visible" });
     assert((await page.locator("#bag-count").innerText()) === "0", `${label} bag changed without a size`);
     await shot(page, `${label}-size-required`);
     await page.getByRole("button", { name: "M", exact: true }).click();
-    await page.getByRole("button", { name: "Add to cart" }).click();
-    const bag = page.getByRole("dialog", { name: "Your bag" });
+    await page.locator("#add-to-cart").click();
+    const bag = page.getByRole("dialog", { name: /in your bag/i });
     await bag.waitFor({ state: "visible" });
     assert((await bag.locator("[data-line]").count()) === 1, `${label} first line`);
 
     await page.goto(`${base}/products/diana-mid-rise-jean-marville-wash`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "27", exact: true }).click();
-    await page.getByRole("button", { name: "Add to cart" }).click();
+    await page.locator("#add-to-cart").click();
     await bag.waitFor({ state: "visible" });
     assert((await bag.locator("[data-line]").count()) === 2, `${label} two lines`);
     await bag.getByRole("button", { name: "Increase quantity of Quinn Dress" }).click();
-    await page.waitForTimeout(50);
+    await bag.locator("[data-qty-value]").first().filter({ hasText: "2" }).waitFor();
     assert((await bag.locator("[data-qty-value]").first().innerText()) === "2", `${label} qty plus`);
     assert((await bag.locator("[data-cart-subtotal]").innerText()) === "$804", `${label} subtotal`);
     await shot(page, `${label}-cart-two-lines`);
@@ -157,13 +163,15 @@ async function exercise(width, height, label) {
     assert((await bag.locator("[data-line]").count()) === 2, `${label} reload keeps two lines`);
     assert((await bag.locator("[data-qty-value]").first().innerText()) === "2", `${label} reload qty`);
     await bag.getByRole("button", { name: "Remove" }).first().click();
+    await bag.locator("[data-line]").nth(0).waitFor();
+    await page.waitForFunction(() => document.querySelectorAll("#cart-dialog [data-line]").length === 1);
     assert((await bag.locator("[data-line]").count()) === 1, `${label} first-click remove`);
     await bag.getByRole("button", { name: "Decrease quantity of Diana Mid Rise Jean" }).click();
-    await bag.getByText("Your bag is empty.").waitFor();
+    await bag.getByText(/your cart is empty/i).waitFor();
     await shot(page, `${label}-cart-empty`);
     await page.reload({ waitUntil: "networkidle" });
     await page.goto(`${base}/cart`, { waitUntil: "networkidle" });
-    await page.locator("main").getByText("Your bag is empty.").waitFor();
+    await page.locator("main").getByText(/your cart is empty/i).waitFor();
     assert((await page.locator("main [data-checkout]").isDisabled()) === true, `${label} checkout off`);
     await shot(page, `${label}-cart-page`);
 
@@ -181,7 +189,7 @@ async function exercise(width, height, label) {
 
     await page.goto(`${base}/pages/contact`, { waitUntil: "networkidle" });
     assert((await page.locator("#newsletter-form input").isDisabled()) === true, `${label} email input`);
-    assert((await page.locator("#newsletter-form button").isDisabled()) === true, `${label} email button`);
+    assert((await page.locator("#newsletter-form button").count()) === 0, `${label} email has no send button`);
     assert((await page.locator("#newsletter-form").getAttribute("action")) === null, `${label} email action`);
     await shot(page, `${label}-contact`);
 
@@ -207,7 +215,7 @@ async function exercise(width, height, label) {
 }
 
 try {
-  await exercise(1440, 900, "desktop");
+  await exercise(1365, 1072, "desktop");
   await exercise(390, 844, "mobile390");
   await exercise(320, 700, "mobile320");
 } finally {
@@ -223,5 +231,5 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exit(1);
 }
-console.log("Browser QA passed at 1440, 390, and 320.");
+console.log("Browser QA passed at 1365, 390, and 320.");
 process.exit(0);

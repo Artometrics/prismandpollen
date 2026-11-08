@@ -1,5 +1,5 @@
 ---
-import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
+import { collectionMenu, shopMenu } from "../data/menus";
 ---
 
 <dialog class="drawer menu-dialog" id="menu-dialog" aria-labelledby="menu-title">
@@ -22,7 +22,7 @@ import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
     </button>
     <div class="acc-panel" id="acc-shop" hidden>
       {
-        shopColumns.map((column) => (
+        shopMenu.map((column) => (
           <div>
             <h2 class="quiet">{column.title}</h2>
             {column.links.map((link) => (
@@ -36,19 +36,23 @@ import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
       Collections <span aria-hidden="true">↪</span>
     </button>
     <div class="acc-panel" id="acc-collections" hidden>
-      {collectionLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      {
+        collectionMenu.map((column) => (
+          <div>
+            <h2 class="quiet">{column.title}</h2>
+            {column.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        ))
+      }
     </div>
-    <button class="acc-btn" type="button" data-acc aria-expanded="false" aria-controls="acc-discover">
-      Discover <span aria-hidden="true">↪</span>
-    </button>
-    <div class="acc-panel" id="acc-discover" hidden>
-      {discoverLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-    </div>
+    <a class="menu-link" href="/journal">Discover <span aria-hidden="true">↪</span></a>
     <div class="menu-foot">
-      <a class="menu-link" href="/pages/account">Account <span class="quiet">off</span></a>
-      <a class="menu-link" href="/pages/assistance">Assistance <span class="quiet">off</span></a>
-      <a class="menu-link" href="/pages/currency">Currency <span class="quiet">USD only</span></a>
-      <a class="menu-link" href="/pages/shops">Find a shop <span class="quiet">none published</span></a>
+      <a class="menu-link" href="/pages/account">Account <span aria-hidden="true">↪</span></a>
+      <a class="menu-link" href="/pages/assistance">Assistance <span aria-hidden="true">↪</span></a>
+      <a class="menu-link" href="/pages/currency">Currency <span aria-hidden="true">↪</span></a>
+      <a class="menu-link" href="/pages/shops">Find a shop <span aria-hidden="true">↪</span></a>
     </div>
   </div>
 </dialog>
@@ -74,24 +78,24 @@ import { collectionLinks, discoverLinks, shopColumns } from "../data/catalog";
 
 <dialog class="drawer" id="cart-dialog" aria-labelledby="cart-title">
   <div class="drawer-head">
-    <h2 class="script" id="cart-title">Your bag</h2>
+    <h2 class="caps" id="cart-title">In your bag</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close bag">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"></path></svg>
     </button>
   </div>
   <div class="drawer-body" data-cart-root>
-    <p data-cart-empty>Your bag is empty.</p>
-    <p class="quiet" data-cart-empty-note>Nothing is reserved. Payments are off.</p>
+    <p data-cart-empty hidden>Your cart is empty</p>
     <div data-cart-filled hidden>
       <div data-cart-lines></div>
-      <p class="subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
-      <button class="orn-btn" type="button" data-checkout disabled>
-        <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
-        Checkout
-      </button>
-      <p class="quiet" id="pay-off">Payments are off. This bag stays on this device and is not an order.</p>
-      <p><a href="/cart">Open the bag page</a></p>
     </div>
+    <p class="subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
+    <label class="quiet"><input type="checkbox" disabled /> Add gift box | $5 — reference observation, not offered</label>
+    <p class="quiet">Reference page: free shipping on orders over $500. Not a promise. Fulfillment is off.</p>
+    <button class="orn-btn" type="button" data-checkout disabled>
+      <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
+      Checkout
+    </button>
+    <p class="quiet" id="pay-off">Payments are off. Checkout was not used. This bag is not an order.</p>
   </div>
 </dialog>
 <p class="sr-only" id="cart-status" role="status"></p>

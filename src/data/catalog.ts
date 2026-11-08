@@ -5,6 +5,8 @@ export type Variant = {
   label: string;
   price: number;
   referenceSku: string;
+  /** Capture observation only. Not live inventory. */
+  unavailable?: boolean;
 };
 
 export type ProductImage = {
@@ -39,6 +41,10 @@ export const products: Product[] = reference.products.map((product) => ({
   imageAlt: product.images[0]
     ? `${product.title}. Reference photograph, rights not cleared.`
     : "",
+  variants: product.variants.map((variant) => ({
+    ...variant,
+    unavailable: product.handle === "quinn-dress-salt" && variant.label === "XXS",
+  })),
 }));
 
 export type Collection = {
@@ -254,6 +260,15 @@ export const utilityPages: UtilityPage[] = [
     paragraphs: [
       "No shop, address, or hours is published.",
       "The shop-detail route exists only to say that a named shop was not copied.",
+    ],
+  },
+  {
+    slug: "not-in-preview",
+    kicker: "Menu",
+    title: "Not in this preview",
+    kind: "prose",
+    paragraphs: [
+      "This label was on the reference menu. No Prism & Pollen page was supplied for it.",
     ],
   },
   {

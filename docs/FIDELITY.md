@@ -65,6 +65,19 @@ Captured, and used only as observation:
 
 Mobile collection, mobile product, mobile cart, mobile search, cart drawer, search, editorial pages, support pages, shop pages, size guide, and the 404. Desktop home from header through footer. Desktop collection footer. Any motion.
 
+## Homepage, PDP, and cart after clone02 and clone03
+
+Implemented from the overlapping home captures and the desktop plus mobile Quinn captures:
+
+- Full-width Holiday Chapter Two hero, Dresses/Tops, Explore collage, campaign video with pause, Featured row, Our Shops layout, torn-paper newsletter, compact footer.
+- Shop hover opens the mega menu. Collections hover swaps the columns and the feature image. Escape closes it. Pointer-leave did not close it in the capture, so it stays open.
+- Mobile menu is a left drawer with a dimmed backdrop.
+- Quinn: XXS struck through as a capture observation, not live stock. No size selected shows Select size. A chosen size shows Add to cart, then the button dims with a spinner. Timing was not measured.
+- Bag drawer: In your bag, stepper, Remove, subtotal. Quantity changes keep the previous subtotal and dim the controls for a short unmeasured hold. Remove fades the line, then Your cart is empty and $0.
+- Mobile drawer fills the viewport. A sticky Size selector / Add to cart bar appears after the main button scrolls away.
+- Gift box $5 and free shipping over $500 are labeled reference observations, not offers. Checkout stays disabled.
+- Mobile arrival with M already selected was a URL variant, not a verified fresh tap. Gallery swipe, mobile size guide, and accordion motion were not captured.
+
 ## Held on purpose
 
 Homepage campaign, hero motion, and menu motion stay unimplemented until the new captures arrive. Payments, accounts, email, SMS, reviews, gift issuance, inventory, and fulfillment stay off. Nothing was deployed.

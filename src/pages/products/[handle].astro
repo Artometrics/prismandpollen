@@ -81,10 +81,12 @@ const gift = product.kind === "gift-card";
               <>
                 {index > 0 ? <span class="dot" aria-hidden="true">·</span> : null}
                 <button
-                  class="size-option"
+                  class:list={["size-option", { "is-unavailable": variant.unavailable }]}
                   type="button"
                   data-variant-id={variant.id}
                   aria-pressed="false"
+                  disabled={variant.unavailable}
+                  title={variant.unavailable ? "Unavailable in the desktop capture. Not live stock." : undefined}
                 >
                   {variant.label}
                 </button>
@@ -103,10 +105,11 @@ const gift = product.kind === "gift-card";
           ) : (
             <button class="orn-btn" id="add-to-cart" type="submit">
               <i class="gem a"></i><i class="gem b"></i><i class="gem c"></i><i class="gem d"></i>
-              Add to cart
+              <span id="add-label">Select size</span>
             </button>
           )
         }
+        <p class="quiet">From $25.09/mo was on the reference page. Payments are off. This is not an offer.</p>
         <p class="quiet">Payments are off. Adding a piece only keeps it in this browser.</p>
       </form>
       <div class="tabs" role="tablist" aria-label="Product notes">
@@ -126,12 +129,91 @@ const gift = product.kind === "gift-card";
         {product.pageTitle.includes("Flan") ? <p>The public title says Flan Beads. The variant option says Champagne.</p> : null}
       </div>
       <div class="panel" data-panel="fit" role="tabpanel" hidden>
-        <p>The size guide was not in the supplied capture. No measurements are invented. Availability is unverified.</p>
+        {
+          product.handle === "quinn-dress-salt" ? (
+            <>
+              <p class="caps">Model</p>
+              <p>Alex is 5'8 and wears the size XS. Alana is 5'7 and wears the size XL.</p>
+              <p class="caps">Measurements</p>
+              <button type="button" id="open-size-guide">Click here for size guide</button>
+              <p class="quiet">XXS was unavailable in the desktop capture. That is not live stock. Mobile fresh size selection was not verified.</p>
+            </>
+          ) : (
+            <p>A size guide was not captured for this piece. No measurements are invented.</p>
+          )
+        }
       </div>
+      {
+        product.handle === "quinn-dress-salt" ? (
+          <dialog id="size-guide" aria-labelledby="guide-title">
+            <button type="button" data-close aria-label="Close size guide">×</button>
+            <h2 id="guide-title" class="caps">Quinn Dress</h2>
+            <p class="quiet">Salt · body measurements from the desktop capture. Garment and conversion tabs were not captured.</p>
+            <div class="tabs">
+              <button type="button" data-guide-tab="body" aria-pressed="true">Body</button>
+              <button type="button" data-guide-tab="garment" aria-pressed="false">Garment</button>
+              <button type="button" data-guide-tab="conversion" aria-pressed="false">Conversion</button>
+            </div>
+            <div data-guide-panel="body">
+              <table class="guide-table">
+                <thead><tr><th>US size</th><th>US size</th><th>Bust</th><th>Waist</th><th>Hips</th></tr></thead>
+                <tbody>
+                  <tr><td>00</td><td>XXS</td><td>30.5–31.5</td><td>23–24</td><td>34–35</td></tr>
+                  <tr><td>0</td><td>XS</td><td>32.5</td><td>25</td><td>36</td></tr>
+                  <tr><td>2</td><td>S</td><td>33.5</td><td>26</td><td>37</td></tr>
+                  <tr><td>4</td><td>S</td><td>34.5</td><td>27</td><td>38</td></tr>
+                  <tr><td>6</td><td>M</td><td>35.5</td><td>28</td><td>39</td></tr>
+                  <tr><td>8</td><td>M</td><td>36.5</td><td>29</td><td>40</td></tr>
+                  <tr><td>10</td><td>L</td><td>38.5–39</td><td>31–31.5</td><td>42–42.5</td></tr>
+                  <tr><td>12</td><td>XL</td><td>41–41.5</td><td>33.5–34</td><td>44.5–45</td></tr>
+                  <tr><td>14</td><td>XL</td><td>43</td><td>35.5</td><td>46.5</td></tr>
+                  <tr><td>16</td><td>XXL</td><td>45–45.5</td><td>37.5–38</td><td>48.5–49</td></tr>
+                </tbody>
+              </table>
+              <p><button type="button" id="unit-toggle" aria-pressed="false">in | cm</button></p>
+              <h3 class="caps">How to measure</h3>
+              <p>We recommend measuring yourself with a soft tape measure, keeping it parallel to the floor and gently relaxed.</p>
+              <ul>
+                <li>Bust: around the fullest part of your chest</li>
+                <li>Waist: around the narrowest part of your midsection</li>
+                <li>Hip: around the fullest part of your hips and seat</li>
+              </ul>
+              <p class="quiet">Reference guide only. Not a Prism &amp; Pollen fit promise.</p>
+            </div>
+            <div data-guide-panel="garment" hidden><p>The garment tab was not captured.</p></div>
+            <div data-guide-panel="conversion" hidden><p>The conversion tab was not captured. The in/cm control converts the body table only.</p></div>
+          </dialog>
+        ) : null
+      }
     </div>
   </article>
   {
-    related.length > 0 ? (
+    product.handle === "quinn-dress-salt" ? (
+      <section class="section" id="pdp-featured">
+        <h2 class="script">Featured</h2>
+        <div class="featured-row">
+          <article class="featured-card">
+            <div class="featured-photo">
+              <img src="/campaign/ISCHIA_DRESS_SALT.jpg" alt="Ischia Dress in salt. Reference photograph." />
+              <img class="featured-frame" src="/campaign/doen-frame-1.webp" alt="" />
+            </div>
+            <h3>Ischia Dress</h3>
+            <p>$348</p>
+            <p class="quiet">XXS · XS · S · M · L · XL · XXL</p>
+          </article>
+          <article class="featured-card">
+            <div class="featured-photo">
+              <img src="/campaign/ISCHIA_DRESS_BLACK.jpg" alt="Ischia Dress in black. Reference photograph." />
+              <img class="featured-frame" src="/campaign/doen-frame-2.webp" alt="" />
+            </div>
+            <h3>Ischia Dress</h3>
+            <p>$348</p>
+            <p class="quiet">XXS · XS · S · M · L · XL · XXL</p>
+          </article>
+        </div>
+        <p class="quiet">Shown under Quinn on the mobile capture. Not part of the twelve-product handoff. Selectable sizes beyond the visible row were not fully read.</p>
+      </section>
+    ) : related.length > 0 ? (
       <section class="section">
         <h2 class="script">Also in the preview</h2>
       </section>
@@ -140,4 +222,8 @@ const gift = product.kind === "gift-card";
       </div>
     ) : null
   }
+  <div class="sticky-buy" id="sticky-buy">
+    <button type="button" id="size-selector-jump">Size selector</button>
+    <button type="button" id="sticky-add">Add to cart</button>
+  </div>
 </Base>

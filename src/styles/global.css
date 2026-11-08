@@ -26,10 +26,9 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--paper);
-  background-image: linear-gradient(rgba(243, 238, 228, 0.78), rgba(243, 238, 228, 0.78)),
-    url("/textures/paper.svg");
-  background-size: auto, 180px 180px;
+  background-color: #f6f2e6;
+  background-image: url("/campaign/doen-bg_update.jpg");
+  background-size: 480px;
   color: var(--ink);
 }
 
@@ -671,7 +670,7 @@ dialog::backdrop {
 }
 
 .menu-dialog {
-  width: min(460px, 92vw);
+  width: min(460px, 86vw);
 }
 
 .search-dialog {
@@ -949,14 +948,12 @@ label.check {
     font-size: 12px;
   }
 
-  .nav-item:hover > .mega,
-  .nav-item:focus-within > .mega,
-  .nav-item.is-open > .mega,
-  .nav-item:hover > .menu-pop,
-  .nav-item:focus-within > .menu-pop,
-  .nav-item.is-open > .menu-pop {
+  #site-header[data-menu="shop"] #mega-shop,
+  #site-header[data-menu="collections"] #mega-collections {
     display: grid;
   }
+  .nav-item { position: static; }
+  .site-header { position: sticky; top: 0; z-index: 6; background: rgba(246, 242, 230, 0.94); }
 
   .mega {
     position: absolute;
@@ -1042,8 +1039,319 @@ label.check {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+.tout-row {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.tout-row .story {
+  min-height: 0;
+}
+.tout-row .story img {
+  aspect-ratio: 3/4;
+  height: auto;
+}
+.explore {
+  position: relative;
+  background: #f3eee4 url("/campaign/HP_CATEGORIES_MOBILE_BG_HOLIDAY_1_2026.png") center top / cover no-repeat;
+  padding: 28px 16px 40px;
+}
+.explore-title {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.explore-collage {
+  display: grid;
+  gap: 18px;
+}
+.explore-card {
+  position: relative;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+}
+.explore-card img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+}
+.explore-card span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12%;
+  text-align: center;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.video-strip {
+  position: relative;
+  background: #111;
+}
+.video-strip video {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: cover;
+  display: block;
+}
+#video-pause {
+  position: absolute;
+  right: 12px;
+  bottom: 36px;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.video-note {
+  position: absolute;
+  left: 12px;
+  bottom: 8px;
+  color: #fff;
+  margin: 0;
+}
+.featured-row {
+  display: grid;
+  gap: 28px;
+  padding: 0 16px 40px;
+  text-align: center;
+}
+.featured-photo {
+  position: relative;
+}
+.featured-photo img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+.featured-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+.featured-card h3 {
+  margin: 12px 0 0;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.featured-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 8px;
+  margin-top: 6px;
+}
+.quick-size {
+  background: none;
+  border: 0;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  cursor: pointer;
+}
+.shops {
+  display: grid;
+  gap: 24px;
+  padding: 20px 16px 48px;
+  text-align: center;
+}
+.shops img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.shops ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+.shops li {
+  margin: 6px 0;
+}
+.notes {
+  background: #efe6d6 url("/campaign/newsletter-background.png") center top / 100% 180px no-repeat;
+  border: 0;
+  padding-top: 72px;
+}
+.email-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--ink);
+  max-width: 420px;
+  margin: 16px auto 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.email-line input { border: 0; background: transparent; flex: 1; min-width: 0; }
+.site-footer {
+  padding-top: 28px;
+}
+.footer-lockup {
+  width: 180px;
+  margin: 0 auto 18px;
+  border: 1px solid var(--ink);
+  border-radius: 40px;
+  padding: 10px 16px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.footer-links {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.footer-links a {
+  text-decoration: none;
+}
+.size-option.is-unavailable {
+  text-decoration: line-through;
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+#add-to-cart.is-loading,
+.sticky-buy button.is-loading {
+  opacity: 0.45;
+}
+#add-to-cart.is-loading::after {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 8px;
+  border: 1px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -1px;
+  animation: spin 0.7s linear infinite;
+}
+.cart-line.is-leaving {
+  opacity: 0;
+  transition: opacity 180ms linear;
+}
+[data-cart-root].is-updating [data-cart-subtotal],
+[data-cart-root].is-updating .qty button,
+[data-cart-root].is-updating .remove-line {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.sticky-buy {
+  display: none;
+}
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.guide-table th,
+.guide-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 4px 6px;
+  text-align: left;
+}
+#size-guide {
+  width: min(720px, calc(100vw - 24px));
+  max-height: 86vh;
+  margin: auto;
+  padding: 22px 18px 28px;
+  background: var(--paper);
+}
+#cart-dialog {
+  width: min(420px, 100vw);
+  transition: opacity 180ms linear, transform 180ms linear;
+}
+#cart-dialog::backdrop {
+  background: rgba(42, 36, 30, 0.46);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 899px) {
+  #cart-dialog {
+    width: 100vw;
+    height: 100dvh;
+    margin: 0;
   }
+  .sticky-buy.is-on {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    background: rgba(246, 242, 230, 0.96);
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+  }
+  .gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 8px 0 0;
+  }
+  .pdp-gallery .frame:not(.is-active) {
+    display: none;
+  }
+}
+@media (min-width: 900px) {
+  .tout-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .explore {
+    background-image: url("/campaign/HP_CATEGORIES_DESKTOP_BG_HOLIDAY_1_2026.png");
+    min-height: 760px;
+  }
+  .explore-title {
+    position: relative;
+    z-index: 2;
+  }
+  .explore-collage {
+    position: relative;
+    height: 640px;
+    display: block;
+  }
+  .explore-card {
+    position: absolute;
+  }
+  .ex-1 { left: 4%; top: 0; width: 28%; }
+  .ex-2 { left: 40%; top: 36px; width: 24%; }
+  .ex-3 { left: 16%; top: 340px; width: 26%; }
+  .ex-4 { left: 44%; top: 280px; width: 22%; }
+  .ex-5 { left: 70%; top: 250px; width: 22%; }
+  .featured-row {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 40px 60px;
+  }
+  .shops {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    text-align: center;
+    padding: 40px 48px 70px;
+  }
+  .footer-links {
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: start;
+  }
+  .gallery-dots { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #add-to-cart.is-loading::after,
+  #cart-dialog,
+  .cart-line.is-leaving { animation: none; transition: none; }
 }

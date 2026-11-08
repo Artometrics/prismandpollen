@@ -146,12 +146,21 @@ function bindProductForm() {
   const handle = form.dataset.handle ?? "";
   const product = byHandle(handle);
   const error = form.querySelector<HTMLElement>("#size-error");
+  const addLabel = document.querySelector("#add-label");
+  const setAddLabel = (ready: boolean) => {
+    if (addLabel) addLabel.textContent = ready ? "Add to cart" : "Select size";
+    document.querySelectorAll("#sticky-add").forEach((button) => {
+      button.textContent = ready ? "Add to cart" : "Select size";
+    });
+  };
   form.querySelectorAll<HTMLButtonElement>("[data-variant-id]").forEach((button) => {
     button.addEventListener("click", () => {
+      if (button.disabled) return;
       form.querySelectorAll("[data-variant-id]").forEach((other) => {
         other.setAttribute("aria-pressed", other === button ? "true" : "false");
       });
       if (error) error.hidden = true;
+      setAddLabel(true);
       const variant = product?.variants.find((item) => item.id === button.dataset.variantId);
       const price = document.querySelector("[data-pdp-price]");
       if (variant && price) price.textContent = formatUSD(variant.price);
@@ -160,9 +169,21 @@ function bindProductForm() {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!product) return;
+    const submitButton = form.querySelector<HTMLButtonElement>("#add-to-cart");
     const variantId = selectedVariant(form);
     const variant = product.variants.find((item) => item.id === variantId) ?? null;
-    const result = addItem(cart, {
+    if (!variant) {
+      if (error) {
+        error.hidden = false;
+        error.textContent = "Select a size.";
+      }
+      form.querySelector<HTMLElement>("[data-size-group]")?.focus();
+      return;
+    }
+    submitButton?.classList.add("is-loading");
+    if (submitButton) submitButton.disabled = true;
+    window.setTimeout(() => {
+      const result = addItem(cart, {
       kind: product.kind,
       handle: product.handle,
       variantId: variant?.id ?? null,
@@ -173,23 +194,25 @@ function bindProductForm() {
       image: product.image,
       href: `/products/${product.handle}`,
     });
-    if (result.error) {
-      if (error) {
-        error.hidden = false;
-        error.textContent = result.error;
+    submitButton?.classList.remove("is-loading");
+      if (submitButton) submitButton.disabled = false;
+      if (result.error) {
+        if (error) {
+          error.hidden = false;
+          error.textContent = result.error;
+        }
+        announce(result.error);
+        return;
       }
-      form.querySelector<HTMLElement>("[data-size-group]")?.focus();
-      announce(result.error);
-      return;
-    }
-    cart = result.cart;
-    persist();
-    renderCart();
-    announce(`Added ${product.title}${variant ? `, ${variant.label}` : ""} to your bag.`);
-    const dialogNode = document.querySelector("#cart-dialog");
-    const dialog = dialogNode instanceof HTMLDialogElement ? dialogNode : null;
-    openDialog(dialog);
-    document.querySelector("#bag-button")?.setAttribute("aria-expanded", "true");
+      cart = result.cart;
+      persist();
+      renderCart();
+      announce(`Added ${product.title}, ${variant.label}.`);
+      const dialogNode = document.querySelector("#cart-dialog");
+      const dialog = dialogNode instanceof HTMLDialogElement ? dialogNode : null;
+      openDialog(dialog);
+      document.querySelector("#bag-button")?.setAttribute("aria-expanded", "true");
+    }, 280);
   });
 }
 
@@ -197,21 +220,51 @@ function bindCartClicks() {
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+    const quick = target.closest<HTMLElement>("[data-quick-add]");
+    if (quick?.dataset.handle && quick.dataset.size && quick.dataset.price && quick.dataset.title) {
+      const result = addItem(cart, {
+        kind: "apparel",
+        handle: quick.dataset.handle,
+        variantId: `${quick.dataset.handle}-${quick.dataset.size}`,
+        title: quick.dataset.title,
+        color: "",
+        variantLabel: quick.dataset.size,
+        unitPrice: Number(quick.dataset.price),
+        image: quick.dataset.image,
+        href: "/#featured",
+      });
+      if (!result.error) {
+        cart = result.cart;
+        persist();
+        renderCart();
+        const dialogNode = document.querySelector("#cart-dialog");
+        openDialog(dialogNode instanceof HTMLDialogElement ? dialogNode : null);
+      }
+      return;
+    }
     const removeId = target.closest<HTMLElement>("[data-remove-line]")?.dataset.removeLine;
     if (removeId) {
+      const row = document.querySelector(`[data-line="${CSS.escape(removeId)}"]`);
+      row?.classList.add("is-leaving");
       cart = removeLine(cart, removeId);
       persist();
-      renderCart();
-      announce("Removed from your bag.");
+      window.setTimeout(() => {
+        renderCart();
+        announce("Removed.");
+      }, 180);
       return;
     }
     const qtyButton = target.closest<HTMLElement>("[data-qty-delta]");
     if (!qtyButton?.dataset.lineId || !qtyButton.dataset.qtyDelta) return;
     const delta = Number(qtyButton.dataset.qtyDelta);
+    document.querySelectorAll("[data-cart-root]").forEach((root) => root.classList.add("is-updating"));
     cart = changeQty(cart, qtyButton.dataset.lineId, delta);
     persist();
-    renderCart();
-    announce("Bag quantity updated.");
+    window.setTimeout(() => {
+      document.querySelectorAll("[data-cart-root]").forEach((root) => root.classList.remove("is-updating"));
+      renderCart();
+      announce("Quantity updated.");
+    }, 280);
   });
 }
 
@@ -241,31 +294,30 @@ function bindMenu() {
 }
 
 function bindDesktopMenus() {
-  document.querySelectorAll<HTMLElement>(".nav-item").forEach((item) => {
-    const button = item.querySelector<HTMLButtonElement>(":scope > button");
-    if (!button) return;
-    const setOpen = (open: boolean) => {
+  const header = document.querySelector<HTMLElement>("#site-header");
+  if (!header) return;
+  const setMenu = (name: "" | "shop" | "collections") => {
+    header.dataset.menu = name;
+    header.querySelectorAll<HTMLButtonElement>(".nav-item > button").forEach((button) => {
+      const controls = button.getAttribute("aria-controls");
+      const open = (name === "shop" && controls === "mega-shop") || (name === "collections" && controls === "mega-collections");
       button.setAttribute("aria-expanded", open ? "true" : "false");
-      item.classList.toggle("is-open", open);
-    };
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      setOpen(button.getAttribute("aria-expanded") !== "true");
     });
-    item.addEventListener("mouseenter", () => setOpen(true));
-    item.addEventListener("mouseleave", () => setOpen(false));
-    item.addEventListener("focusin", () => setOpen(true));
-    item.addEventListener("focusout", (event) => {
-      const next = event.relatedTarget;
-      if (!(next instanceof Node) || !item.contains(next)) setOpen(false);
-    });
+  };
+  const shop = header.querySelector<HTMLElement>("#shop-wrap");
+  const collections = header.querySelector<HTMLElement>("#collections-wrap");
+  shop?.addEventListener("mouseenter", () => setMenu("shop"));
+  collections?.addEventListener("mouseenter", () => setMenu("collections"));
+  shop?.querySelector("button")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    setMenu(header.dataset.menu === "shop" ? "" : "shop");
+  });
+  collections?.querySelector("button")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    setMenu(header.dataset.menu === "collections" ? "" : "collections");
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-    document.querySelectorAll<HTMLElement>(".nav-item.is-open").forEach((item) => {
-      item.classList.remove("is-open");
-      item.querySelector("button")?.setAttribute("aria-expanded", "false");
-    });
+    if (event.key === "Escape") setMenu("");
   });
 }
 
@@ -433,6 +485,85 @@ function bindTabs() {
   });
 }
 
+function bindExtras() {
+  const video = document.querySelector<HTMLVideoElement>("#campaign-video");
+  document.querySelector("#video-pause")?.addEventListener("click", () => {
+    if (!video) return;
+    if (video.paused) {
+      void video.play();
+      document.querySelector("#video-pause")!.textContent = "Pause background video";
+    } else {
+      video.pause();
+      document.querySelector("#video-pause")!.textContent = "Play background video";
+    }
+  });
+  const frames = [...document.querySelectorAll<HTMLElement>(".pdp-gallery .frame")];
+  if (frames.length > 1 && window.matchMedia("(max-width: 899px)").matches) {
+    frames.forEach((frame, index) => frame.classList.toggle("is-active", index === 0));
+    const dots = document.createElement("div");
+    dots.className = "gallery-dots";
+    frames.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.textContent = "•";
+      dot.setAttribute("aria-label", `Image ${index + 1}`);
+      dot.addEventListener("click", () => {
+        frames.forEach((frame, frameIndex) => frame.classList.toggle("is-active", frameIndex === index));
+      });
+      dots.append(dot);
+    });
+    document.querySelector(".pdp-gallery")?.after(dots);
+  }
+  const addButton = document.querySelector("#add-to-cart");
+  const sticky = document.querySelector("#sticky-buy");
+  if (addButton && sticky && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.some((entry) => entry.isIntersecting);
+      sticky.classList.toggle("is-on", !visible && window.innerWidth < 900);
+    });
+    observer.observe(addButton);
+  }
+  document.querySelector("#size-selector-jump")?.addEventListener("click", () => {
+    document.querySelector("[data-size-group]")?.scrollIntoView({ block: "center" });
+  });
+  document.querySelector("#sticky-add")?.addEventListener("click", () => {
+    document.querySelector<HTMLFormElement>("#add-form")?.requestSubmit();
+  });
+  const guide = document.querySelector<HTMLDialogElement>("#size-guide");
+  document.querySelector("#open-size-guide")?.addEventListener("click", () => {
+    if (guide && !guide.open) guide.showModal();
+  });
+  guide?.querySelector("[data-close]")?.addEventListener("click", () => guide.close());
+  guide?.querySelectorAll<HTMLButtonElement>("[data-guide-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const name = button.dataset.guideTab;
+      guide.querySelectorAll("[data-guide-tab]").forEach((other) => {
+        other.setAttribute("aria-pressed", other === button ? "true" : "false");
+      });
+      guide.querySelectorAll<HTMLElement>("[data-guide-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.guidePanel !== name;
+      });
+    });
+  });
+  document.querySelector("#unit-toggle")?.addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    if (!(button instanceof HTMLButtonElement)) return;
+    const toCm = button.getAttribute("aria-pressed") !== "true";
+    button.setAttribute("aria-pressed", toCm ? "true" : "false");
+    document.querySelectorAll(".guide-table td").forEach((cell) => {
+      if (!(cell instanceof HTMLElement)) return;
+      if (!cell.dataset.in) cell.dataset.in = cell.textContent ?? "";
+      if (!toCm) {
+        cell.textContent = cell.dataset.in;
+        return;
+      }
+      cell.textContent = cell.dataset.in.replace(/\d+(?:\.\d+)?/g, (value) =>
+        String(Math.round(Number(value) * 2.54 * 10) / 10),
+      );
+    });
+  });
+}
+
 function bindNewsletter() {
   document.querySelector("#newsletter-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -449,6 +580,7 @@ bindDesktopMenus();
 bindSearch();
 bindFilters();
 bindTabs();
+bindExtras();
 bindNewsletter();
 
 const cartDialogNode = document.querySelector("#cart-dialog");
